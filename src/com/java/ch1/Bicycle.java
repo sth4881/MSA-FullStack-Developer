@@ -1,4 +1,4 @@
-package com.kosa.ch1;
+package com.java.ch1;
 
 // Bicycle 클래스의 본명은 com.kosa.Bicycle
 public class Bicycle {

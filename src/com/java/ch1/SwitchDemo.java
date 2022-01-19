@@ -1,4 +1,4 @@
-package com.kosa.ch1;
+package com.java.ch1;
 
 public class SwitchDemo {
     public static void main(String[] args) {
