@@ -8,7 +8,6 @@ import oracle.jdbc.pool.OracleDataSource;
 
 public class JdbcConnection {
 	public static void main(String args[]) throws SQLException {
-
 		OracleDataSource ods = new OracleDataSource();
 
 		/* Thin driver */
@@ -42,7 +41,6 @@ public class JdbcConnection {
 		System.out.println("OCR Driver [2] 통과");
 
 		/* 설정 파일 + 싱글턴 패턴 활용 접속 */
-//		Connection conn5 = DBConnection.getConnection();
+		Connection conn5 = DBConnection.getConnection();
 	}
-
 }

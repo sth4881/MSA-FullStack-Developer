@@ -23,9 +23,7 @@ public class JdbcTestSelect {
 				System.out.print(rset.getInt(1) + " ");
 				System.out.println(rset.getString(2));
 			}
-		}
-
-		finally {
+		} finally {
 			if (rset != null)
 				rset.close();
 			if (stmt != null)
