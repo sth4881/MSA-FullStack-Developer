@@ -1,0 +1,76 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="7CD92B23-5162-F1BD-B0AA-2877032D7B5B" name="EMP">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 10:27:32 UTC</createdTime>
+<ownerDesignName>firstDM</ownerDesignName>
+<engineerTo>
+<item key="A878EC96-A0E8-60E4-C87F-17798CE2D87D" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="empno" id="A1FE6AB4-B3B6-8C89-C0E3-9140C90A4E89">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 10:27:37 UTC</createdTime>
+<ownerDesignName>firstDM</ownerDesignName>
+<engineerTo>
+<item key="A878EC96-A0E8-60E4-C87F-17798CE2D87D" value="true"/>
+</engineerTo>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="ename" id="550AB3F0-1439-F4AE-B5D1-9016C201AEF6">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 10:27:40 UTC</createdTime>
+<ownerDesignName>firstDM</ownerDesignName>
+<engineerTo>
+<item key="A878EC96-A0E8-60E4-C87F-17798CE2D87D" value="true"/>
+</engineerTo>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="sal" id="98584AAC-24BA-2ABA-9DC4-4C861A0BE7F7">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 10:27:44 UTC</createdTime>
+<ownerDesignName>firstDM</ownerDesignName>
+<engineerTo>
+<item key="A878EC96-A0E8-60E4-C87F-17798CE2D87D" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="deptno" id="E75A16F3-B57E-4500-E66B-D6E36704F278">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 10:28:17 UTC</createdTime>
+<generatorID>C7D4FAE6-8449-0C0E-FA08-7578D606805D</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<engineerTo>
+<item key="A878EC96-A0E8-60E4-C87F-17798CE2D87D" value="true"/>
+</engineerTo>
+<referedAttribute>6C87011E-999D-4826-B73C-1EBFAC55B8FC</referedAttribute>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="720BA9BC-12FA-9D05-563B-B2D730F4F81C" name="EMP PK">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 10:27:40 UTC</createdTime>
+<ownerDesignName>firstDM</ownerDesignName>
+<engineerTo>
+<item key="A878EC96-A0E8-60E4-C87F-17798CE2D87D" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>A1FE6AB4-B3B6-8C89-C0E3-9140C90A4E89</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

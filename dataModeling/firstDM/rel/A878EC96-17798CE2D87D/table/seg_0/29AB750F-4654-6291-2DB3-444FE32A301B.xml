@@ -1,0 +1,106 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="29AB750F-4654-6291-2DB3-444FE32A301B" name="DEPT">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>10ABFE66-9A37-AAFE-0CC1-7213A1C5F169</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="deptno" id="2427E55B-8F02-0EE7-DF14-6C3EFF6D73F7">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>6C87011E-999D-4826-B73C-1EBFAC55B8FC</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="dname" id="F114D888-8F0E-D178-8807-535A92EB856F">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>9665D9B1-449C-885F-46C6-2E954E42FE79</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="loc" id="8A8CD675-4DB7-A841-55E8-61E9B5C42854">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>C2EA578A-F20A-BF55-2832-9A660284DA32</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="Entity_6_Entity_6_ID" id="47652DEB-FF8F-F86C-EFA3-81266049C6A9">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<ownerDesignName>firstDM</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="FB8CFEB5-C7A8-A7C3-6DE9-9FF4FDE8A747" referredColumn="EDCC96A8-692A-030A-EFB2-BDAF4A4F64BD"/>
+</associations>
+</Column>
+<Column name="Entity_7_Entity_7_ID" id="77796366-CE90-DE3C-C660-0180EF8C08D6">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<ownerDesignName>firstDM</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="15F1CC33-D098-8B56-DD60-98C85D583440" referredColumn="525CA1F8-9EA4-B45F-541D-3B629DEF2472"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="60A61EB6-AE6F-51A9-8CEE-B9ED26FAF69B" name="DEPT_PK">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>2E817974-110C-3B4E-1730-C4E7FFF285DA</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="2427E55B-8F02-0EE7-DF14-6C3EFF6D73F7"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="982CC47E-0C57-8FB9-4942-0A7EBF7467B6" name="DEPT_Entity_6_FK">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>1CB584BF-414E-9E2A-8862-1DAC2E1C121E</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="47652DEB-FF8F-F86C-EFA3-81266049C6A9"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="2A0631F5-FA62-7B53-85C4-D84533183AB2" name="DEPT_Entity_7_FK">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>87C1E02E-5040-DFAB-8983-C75B7DD14342</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="77796366-CE90-DE3C-C660-0180EF8C08D6"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

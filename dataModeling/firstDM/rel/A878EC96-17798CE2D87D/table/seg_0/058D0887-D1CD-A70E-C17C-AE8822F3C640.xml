@@ -1,0 +1,78 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="058D0887-D1CD-A70E-C17C-AE8822F3C640" name="EMP">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>7CD92B23-5162-F1BD-B0AA-2877032D7B5B</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="empno" id="DF362831-54BF-0718-2172-D008D9D0B65D">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>A1FE6AB4-B3B6-8C89-C0E3-9140C90A4E89</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ename" id="0DE4C438-ADC1-94FF-6B01-7E869E93F7C5">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>550AB3F0-1439-F4AE-B5D1-9016C201AEF6</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="sal" id="C32A56A2-360E-605D-6117-24278EEDAE07">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>98584AAC-24BA-2ABA-9DC4-4C861A0BE7F7</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DEPT_deptno" id="33560782-DD29-84CE-218E-4BDB41E9336A">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>E75A16F3-B57E-4500-E66B-D6E36704F278</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<use>0</use>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="D59E0086-8FA6-AA78-63D3-689214D22C2E" referredColumn="2427E55B-8F02-0EE7-DF14-6C3EFF6D73F7"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="6E7BE392-5A3E-6618-A19F-9585604C224F" name="EMP_PK">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>720BA9BC-12FA-9D05-563B-B2D730F4F81C</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="DF362831-54BF-0718-2172-D008D9D0B65D"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="5BAAD510-BB05-D2D9-1660-979BED8BE73B" name="EMP_DEPT_FK">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 11:50:25 UTC</createdTime>
+<generatorID>C7D4FAE6-8449-0C0E-FA08-7578D606805D</generatorID>
+<ownerDesignName>firstDM</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="33560782-DD29-84CE-218E-4BDB41E9336A"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
