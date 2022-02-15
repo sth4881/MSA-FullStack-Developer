@@ -1,0 +1,96 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="BC777B08-2000-F494-218A-32ECA61CFF14" name="Books">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:01:57 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="books_id" id="A638CDAC-9517-8337-1AF7-2AD3F9A24250">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:14:32 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>3D27E34B-B558-0450-17EB-0BB4FDC3EBF8</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="title" id="FEE4249C-4639-69E9-D1CC-49DFB48D4339">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:14:45 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>76A3FA83-CF19-CD90-4C1A-FDB9C81F9448</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="author_last_name" id="5242A0DA-EE48-6AA4-EEC5-055A3F8846B6">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:15:07 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>097E7170-4FE1-971A-77A8-A76DBA3E813D</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="author_first_name" id="0DF2E20F-A965-C594-CFAD-6E714148203A">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:15:22 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>097E7170-4FE1-971A-77A8-A76DBA3E813D</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="rating" id="A233F9AA-89F8-F8F4-721C-5EC0801E220C">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:15:28 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>2</dataTypePrecision>
+<ownDataTypeParameters>,2,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="5C68725B-1954-BD63-C688-35DEDDB87A6A" name="Books PK">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:14:41 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>A638CDAC-9517-8337-1AF7-2AD3F9A24250</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

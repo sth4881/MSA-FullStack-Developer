@@ -1,0 +1,135 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="744483E0-15EE-50DE-8D0C-C49CB2169E94" name="Patrons">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:16:45 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="patron_id" id="338789DD-8355-EFAA-59DA-2870EECB170D">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:17:06 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<domain>8D1165D7-DF23-4A5D-08EC-E09BB85F2B95</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="last_name" id="B59B29AE-5155-D692-EF7A-AD8C995DF435">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:17:18 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>097E7170-4FE1-971A-77A8-A76DBA3E813D</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="first_name" id="C99B56BC-66C7-30FA-E3BF-6AA72742FD80">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:17:46 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>097E7170-4FE1-971A-77A8-A76DBA3E813D</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="street_address" id="97187D0A-C769-7134-C215-7F61C073FFEC">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:17:30 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>C9D5B41D-F811-D1DD-5FAA-5B63274AE7E0</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="city" id="7EFFB490-6893-2B26-5BAD-7957E3D45529">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:18:04 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>7FE9C84D-3D36-15B1-D485-BCBD669E24EA</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="state" id="5E66454A-399E-D921-791E-71D08450663E">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:18:14 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>AFBB25D3-C14F-14EB-236B-2840E200CFA1</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="zip" id="FC4E4675-1A3E-F447-F758-BF8CCDD09C06">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:18:21 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<use>0</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<domain>90B2B3FC-302A-2F6C-7378-888B4DEEF33D</domain>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="location" id="DE895994-BD0D-D75A-2E7C-C3969E07F918">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:18:28 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>3</use>
+<structuredType>47E390DE-0671-C4B1-8428-0F45CBEE18F8</structuredType>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="3F7E95B8-504B-7ED8-00FB-13AE27DED306" name="Patrons PK">
+<createdBy>SJH</createdBy>
+<createdTime>2022-02-15 01:17:16 UTC</createdTime>
+<ownerDesignName>library_design</ownerDesignName>
+<engineerTo>
+<item key="0CE2B713-FB82-7636-2E4F-448070813FE4" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>338789DD-8355-EFAA-59DA-2870EECB170D</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

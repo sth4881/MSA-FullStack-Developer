@@ -1,0 +1,8 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<oracle.dbtools.crest.model.design.logical.LogicalDesign>
+   <object objectType="Entity" objectID="BC777B08-2000-F494-218A-32ECA61CFF14" name="Books" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Entity" propertyParentId="2FBBDCAA-C7B1-A1D5-C849-6F37ED508E4D" propertySourceId="" propertyTargetId=""/>
+   <object objectType="Entity" objectID="744483E0-15EE-50DE-8D0C-C49CB2169E94" name="Patrons" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Entity" propertyParentId="2FBBDCAA-C7B1-A1D5-C849-6F37ED508E4D" propertySourceId="" propertyTargetId=""/>
+   <object objectType="Entity" objectID="DB596097-B3F9-1123-0925-35548440C625" name="Transactions" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Entity" propertyParentId="2FBBDCAA-C7B1-A1D5-C849-6F37ED508E4D" propertySourceId="" propertyTargetId=""/>
+   <object objectType="Relation" objectID="02C7630C-F48D-88BB-0F2C-E612EAD35C90" name="Relation_2" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Relation" propertyParentId="2FBBDCAA-C7B1-A1D5-C849-6F37ED508E4D" propertySourceId="BC777B08-2000-F494-218A-32ECA61CFF14" propertyTargetId="DB596097-B3F9-1123-0925-35548440C625"/>
+   <object objectType="Relation" objectID="9F44AB1B-3381-7D32-4A4E-8C67634F93CD" name="Relation_3" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Relation" propertyParentId="2FBBDCAA-C7B1-A1D5-C849-6F37ED508E4D" propertySourceId="744483E0-15EE-50DE-8D0C-C49CB2169E94" propertyTargetId="DB596097-B3F9-1123-0925-35548440C625"/>
+</oracle.dbtools.crest.model.design.logical.LogicalDesign>
