@@ -14,6 +14,7 @@
 - 신입사원으로서 갖춰야 할 직장기본소양
 
 ## ✅ Commit Message
-- `[Create] 🔥 CREATE_FILE_OR_DIRECTORY`
-- `[Update] ✨ UPDATE_FILE_OR_DIRECTORY`
+- `[Add] 🌟 ADD_FILE_OR_DIRECTORY`
+- `[Update] ✨ UPDATE_README_OR_ALMIND`
+- `[Update] 🔥 UPDATE_FILE_OR_DIRECTORY`
 - `[Delete] 💥 DELETE_FILE_OR_DIRECTORY`
