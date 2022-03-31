@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<context:component-scan base-package="net.developia.spring01.jdbc3" />
+	
+	<!-- 로컬에서 테스트할 때 주로 사용 -->
+	<!--
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="net.sf.log4jdbc.DriverSpy" />
+		<property name="url" value="jdbc:log4jdbc:oracle:thin:@localhost:1521/xepdb1" />
+		<property name="username" value="ace" />
+		<property name="password" value="me" />
+	</bean>
+	-->
+	
+	<!--
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="net.sf.log4jdbc.DriverSpy" />
+		<property name="url" value="jdbc:log4jdbc:oracle:thin:@localhost:1521/xepdb1" />
+		<property name="username" value="ace" />
+		<property name="password" value="me" />
+	</bean>
+	-->
+	
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
+		p:username="ace"
+		p:password="me"
+		p:jdbcUrl="jdbc:log4jdbc:oracle:thin:@localhost:1521/xepdb1"
+		p:driverClassName="net.sf.log4jdbc.DriverSpy"
+		p:maximumPoolSize="20"
+		/>
+
+	<!-- 쿼리를 수행해주는 빈 -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="typeAliasesPackage" value="net.developia.spring01.jdbc3" />
+	</bean>
+	
+	<!-- 인터페이스를 주입받으면 구현체를 자동으로 생성해주는 빈 -->
+	<bean id="dao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="sqlSessionFactory" ref="sqlSession" />
+		<property name="mapperInterface" value="net.developia.spring01.jdbc3.DeptDAO" />
+	</bean>
+</beans>

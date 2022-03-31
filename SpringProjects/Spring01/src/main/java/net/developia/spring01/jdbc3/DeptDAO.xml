@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.developia.spring01.jdbc3.DeptDAO">
+	<!-- SELECT 결과를 DeptDTO의 deptno, dname, loc 필드에 각각 집어넣고 리스트 형태로 변환 -->
+	
+	<select id="listDept" parameterType="int" resultType="DeptDTO">
+		SELECT deptno, dname, loc FROM dept 
+		WHERE deptno between #{begin} and #{end} ORDER BY deptno
+	</select>
+	
+	<select id="countDept" resultType="int">
+		SELECT count(*) FROM dept
+	</select>
+	
+	<select id="listEmployees" parameterType="int" resultType="EmpDeptDTO">
+		SELECT e.last_name, e.job_id, e.salary, d.department_name
+		FROM employees e JOIN departments d ON e.department_id = d.department_id
+		WHERE d.department_id=#{department_id}
+	</select>
+	
+	<insert id="insertDept" parameterType="DeptDTO">
+		INSERT INTO DEPT(deptno, dname, loc) VALUES(#{deptno}, #{dname}, #{loc})
+	</insert>
+	
+	<update id="updateDept" parameterType="DeptDTO">
+		UPDATE DEPT SET dname=#{dname}, loc=#{loc} WHERE deptno=#{deptno}
+	</update>
+	
+	<delete id="deleteDept" parameterType="Integer">
+		DELETE FROM DEPT WHERE DEPTNO=#{deptno}
+	</delete>
+</mapper>

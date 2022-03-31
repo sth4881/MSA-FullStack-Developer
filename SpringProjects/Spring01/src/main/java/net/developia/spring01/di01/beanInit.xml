@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- Setter 메소드를 이용해서 값을 주입할 때 property 태그를 사용한다. -->
+	<!-- 따라서 필드가 존재해도 setter 메소드가 없으면, 빈이 생성되더라도 값이 초기화되지 않는다. -->
+
+	<!-- MessageBeanImpl 객체를 생성한 후 빈 id를 'mb'로 지정한다. -->
+	<bean class="net.developia.spring01.di01.MessageBeanImpl" id="bean">
+		<!-- <value> 태그를 이용해서 MessageBeanImpl 
+		객체의 프로퍼티(name, greeting, outputter) 값을 초기화 -->
+		<property name="name" value="서태지" />
+		<property name="greeting" value="안녕하세요" />
+		<property name="outputter" ref="output" />
+	</bean>
+	
+	<!-- OutputterImpl 객체를 생성한 후 빈 id를 'output'로 지정한다. -->
+	<bean class="net.developia.spring01.di01.OutputterImpl" id="output">
+		<!-- <value> 태그를 이용해서 OutputterImpl 객체의 프로퍼티(name) 값을 초기화 -->
+		<property name="fileName" value="output.txt" />
+	</bean>
+</beans>
