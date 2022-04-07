@@ -10,7 +10,7 @@
 <body>
 	<table border="1">
 		<tr>
-			<th>번호</th>
+			<th>글번호</th>
 			<td>${vno}</td>
 		</tr>
 		<tr>
@@ -39,7 +39,7 @@
 		</tr>
 	</table><br>
 	<a href="../">목록</a> |
-	<a href="update">수정</a> |
-	<a href="../../${page}/${dto.ano}/delete">삭제</a>
+	<a href="${vno}/update">수정</a> |
+	<a href="${vno}/delete">삭제</a>
 </body>
 </html>

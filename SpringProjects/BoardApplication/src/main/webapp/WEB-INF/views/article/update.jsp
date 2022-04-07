@@ -8,14 +8,14 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<c:set var="dto" value="${boardDTO}" />
+	<c:set var="dto" value="${dto}" />
 	<form method="post">
 		<table>
 			<caption>게시물 수정</caption>
 			<tr>
 				<th>글 번호</th>
 				<td>
-					${vno}<input type="hidden" name="no" required="required" value="${dto.no}" />
+					${vno}<input type="hidden" name="ano" required="required" value="${dto.ano}" />
 				</td>
 			</tr>
 			<tr>
@@ -26,7 +26,7 @@
 			</tr>
 			<tr>
 				<th>이름</th>
-				<td><input type="text" name="name" value="${dto.name}" required="required"/></td>
+				<td><input type="text" name="name" value="${dto.author}" required="required"/></td>
 			</tr>
 			<tr>
 				<th>비밀번호</th>

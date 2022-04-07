@@ -1,20 +1,30 @@
 package com.kosa.app.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kosa.app.dto.ArticleDTO;
+import com.kosa.app.dto.AttachDTO;
 import com.kosa.app.service.AppService;
 
 import lombok.extern.log4j.Log4j;
+import net.coobird.thumbnailator.Thumbnailator;
 
 @Log4j
 @Controller
@@ -26,10 +36,30 @@ public class ArticleController {
 	@Value("${blockPerPage}")
 	private int blockPerPage; // 한 페이지에 보여지는 페이지 블록의 개수
 	
+	@Value("${uploadFolder}")
+	private String uploadFolder; // 파일 업로드 경로
+	
 	// 생성자 주입
 	private AppService service;
 	public ArticleController(AppService service) {
 		this.service = service;
+	}
+	
+	private String getFolder() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String str = sdf.format(new Date());
+		return str.replace("-", "/");
+	}
+	
+	// 특정 파일이 이미지 타입인지 검사하는 메소드
+	private boolean checkImageType(File file) {
+		try {
+			String contentType = Files.probeContentType(file.toPath());
+			return contentType.startsWith("image");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	// 게시글 목록 불러오기
@@ -68,20 +98,63 @@ public class ArticleController {
 	}
 	
 	// 게시글 등록하기
-	@GetMapping("/insert")
+	@GetMapping("insert")
 	public String insertArticle() {
 		return "article.insert";
 	}
-	@PostMapping("/insert")
-	public String insertArticle(@ModelAttribute ArticleDTO dto, Model model) {
-		log.info(dto.toString());
+	@PostMapping("insert")
+	@ResponseBody
+	public String insertArticle(
+		@RequestParam String title, @RequestParam String author,
+		@RequestParam String password, @RequestParam String content,
+		MultipartFile[] attach, Model model) {
 		try {
-			service.insertArticle(dto);
-			return "redirect:../1/";
+			ArticleDTO articleDTO = new ArticleDTO();
+			articleDTO.setTitle(title); articleDTO.setAuthor(author);
+			articleDTO.setPassword(password); articleDTO.setContent(content);
+			service.insertArticle(articleDTO);
+			
+			String uploadFolderPath = getFolder();
+			File uploadPath = new File(uploadFolder, uploadFolderPath);
+			log.info("Upload Path : " + uploadPath);
+			if(uploadPath.exists()==false) {
+				uploadPath.mkdirs();
+			}
+			
+			List<AttachDTO> list = new ArrayList<>();
+			for(MultipartFile file : attach) {
+				log.info("------------------------------------------------");
+				log.info("Upload File Name : " + file.getOriginalFilename());
+				log.info("Upload File Size : " + file.getSize());
+				
+				String uploadFileName = file.getOriginalFilename();
+				uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\")+1);
+				log.info("Only File Name : " + uploadFileName);
+				
+				try {
+					//File saveFile = new File(uploadFolder, uploadFileName);
+					File saveFile = new File(uploadPath, uploadFileName);
+					file.transferTo(saveFile);
+					
+					AttachDTO attachDTO = new AttachDTO();
+					attachDTO.setAno(articleDTO.getAno());
+					attachDTO.setFname(uploadFileName);
+					if(checkImageType(saveFile)) {
+						attachDTO.setImage(true);
+						FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
+						Thumbnailator.createThumbnail(file.getInputStream(), thumbnail, 100, 100);
+						thumbnail.close();
+					}
+					list.add(attachDTO);
+				} catch (Exception e) {
+					log.info(e.getMessage());
+					return "2";
+				}
+			}
 		} catch (Exception e) {
-			model.addAttribute("msg", "Error : insertArticle()");
-			model.addAttribute("url", "javascript:history.back();");
-			return "result";
+			log.info(e.getMessage());
+			return "2";
 		}
+		return "1";
 	}
 }

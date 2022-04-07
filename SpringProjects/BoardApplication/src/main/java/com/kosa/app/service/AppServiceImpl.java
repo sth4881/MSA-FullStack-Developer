@@ -44,10 +44,7 @@ public class AppServiceImpl implements AppService {
 
 	@Override
 	public void insertArticle(ArticleDTO dto) throws Exception {
-		// 등록한 게시물이 0개면 오류 발생
-		if(dao.insertArticle(dto)==0) {
-			throw new RuntimeException("게시글을 등록하는 중에 오류가 발생하였습니다.");
-		}
+		dao.insertArticle(dto);
 	}
 
 	@Override

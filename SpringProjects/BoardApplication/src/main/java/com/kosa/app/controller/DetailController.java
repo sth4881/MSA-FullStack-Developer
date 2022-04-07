@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kosa.app.dto.ArticleDTO;
@@ -44,9 +45,13 @@ public class DetailController {
 		}
 	}
 	
-	// 게시글 수정하기
-	@GetMapping(value="update")
-	public String update(@PathVariable long ano, Model model) {
+	// 게시글 수정하기(GET)
+	//@GetMapping("update")
+	@RequestMapping(value="/{vno}/update", method=RequestMethod.GET)
+	public String update(
+		@PathVariable long ano, 
+		@PathVariable long vno,
+		Model model) {
 		try {
 			ArticleDTO dto = service.getArticleDetail(ano);
 			model.addAttribute("dto", dto);
@@ -57,13 +62,19 @@ public class DetailController {
 			return "result";
 		}
 	}
-	@PostMapping(value="update")
-	public String update(@ModelAttribute ArticleDTO dto, Model model) {
+	
+	// 게시글 수정하기(POST)
+	//@PostMapping("update")
+	@RequestMapping(value="/{vno}/update", method=RequestMethod.POST)
+	public String update(
+		@ModelAttribute ArticleDTO dto,
+		@PathVariable long vno,
+		Model model) {
 		log.info(dto.toString());
 		try {
 			service.updateArticle(dto);
-			model.addAttribute("msg", dto.getAno()+ "번 게시물이 수정되었습니다.");
-			model.addAttribute("url", "./");
+			model.addAttribute("msg", vno + "번 게시물이 수정되었습니다.");
+			model.addAttribute("url", "../?vno=" + vno);
 		} catch (Exception e) {
 			model.addAttribute("msg", e.getMessage());
 			model.addAttribute("url", "javascript:history.back();");
@@ -71,24 +82,33 @@ public class DetailController {
 		return "result";
 	}
 	
-	// 게시글 삭제하기
-	@GetMapping("delete")
-	public String delete(@PathVariable long ano, Model model) {
+	// 게시글 삭제하기(GET)
+	//@GetMapping("delete")
+	@RequestMapping(value="/{vno}/delete", method=RequestMethod.GET)
+	public String delete(
+		@PathVariable long ano,
+		@PathVariable long vno,
+		Model model) {
+		model.addAttribute(vno);
 		return "article.delete";
 	}
-	@PostMapping("delete")
+	
+	// 게시글 삭제하기(POST)
+	//@PostMapping("delete")
+	@RequestMapping(value="/{vno}/delete", method=RequestMethod.POST)
 	public String delete(
 		@ModelAttribute ArticleDTO dto,
+		@PathVariable long vno,
 		Model model) {
 		try {
+			log.info("삭제 성공");
 			service.deleteArticle(dto);
-			model.addAttribute("msg", dto.getAno() + "번 게시물이 삭제되었습니다.");
-			model.addAttribute("url", "../../1/");
-			return "article.delete";
+			model.addAttribute("msg", vno + "번 게시물이 삭제되었습니다.");
+			model.addAttribute("url", "../../../1/");
 		} catch (Exception e) {
 			model.addAttribute("msg", e.getMessage());
 			model.addAttribute("url", "javascript:history.back();");
-			return "result";
 		}
+		return "result";
 	}
 }

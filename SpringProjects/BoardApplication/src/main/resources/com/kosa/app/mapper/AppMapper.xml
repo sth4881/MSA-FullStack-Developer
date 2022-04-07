@@ -29,8 +29,8 @@
 		UPDATE t_article SET viewcount = viewcount+1 WHERE ano = #{ano}
 	</select>
 	
-	<!-- 게시글 등록하기 -->
-	<insert id="insertArticle" parameterType="ArticleDTO">
+	<!-- 게시글 등록하기, keyColumn은 테이블의 어느 속성을 받을지 설정,  keyProperty는 반환된 값을 어느 필드에 넣어줄지 설정 -->
+	<insert id="insertArticle" parameterType="ArticleDTO" useGeneratedKeys="true" keyColumn="ano" keyProperty="ano">
 		INSERT INTO t_article(ano, title, author, password, content)
 		VALUES(t_article_no_seq.nextval, #{title}, #{author}, #{password}, #{content})
 	</insert>

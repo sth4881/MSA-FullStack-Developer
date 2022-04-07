@@ -48,6 +48,6 @@
 				</c:if>
 			</td>
 	</table>
-	<a href="../${page}/insert">글쓰기</a>
+	<a href="insert">글쓰기</a>
 </body>
 </html>
