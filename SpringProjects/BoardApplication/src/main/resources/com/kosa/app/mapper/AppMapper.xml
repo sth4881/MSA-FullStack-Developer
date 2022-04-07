@@ -35,6 +35,11 @@
 		VALUES(t_article_no_seq.nextval, #{title}, #{author}, #{password}, #{content})
 	</insert>
 	
+	<insert id="insertAttach" parameterType="AttachDTO">
+		INSERT INTO t_attach(fno, fname, image, ano)
+		VALUES(t_attach_no_seq.nextval, #{fname}, #{image}, #{ano})
+	</insert>
+	
 	<!-- 게시글 수정하기 -->
 	<update id="updateArticle" parameterType="ArticleDTO">
 		UPDATE t_article SET title=#{title}, content=#{content}, updatedat=sysdate

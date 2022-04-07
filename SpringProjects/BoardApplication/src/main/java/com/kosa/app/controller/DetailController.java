@@ -1,16 +1,22 @@
 package com.kosa.app.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kosa.app.dto.ArticleDTO;
+import com.kosa.app.dto.AttachDTO;
 import com.kosa.app.service.AppService;
 
 import lombok.extern.log4j.Log4j;
@@ -30,7 +36,7 @@ public class DetailController {
 	public String detail(
 		@PathVariable long page, // 페이지 번호
 		@PathVariable long ano, // 게시물 번호
-		@RequestParam long vno, // 가상 번호(list.jsp에서 query-string을 통해 들어옴)
+		@RequestParam long vno, // 가상 번호(list.jsp에서 query-string으로 들어옴)
 		Model model) {
 		try {
 			ArticleDTO dto = service.getArticleDetail(ano);
@@ -44,6 +50,13 @@ public class DetailController {
 			return "result";
 		}
 	}
+	
+	// 특정 게시물의 첨부파일 목록을 모두 가져와서 전송
+//	@GetMapping(value="/display", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+//	@ResponseBody
+//	public ResponseEntity<List<AttachDTO>> getAttachList(long ano) {
+//		return new ResponseEntity<>(service.getAttachList(ano), HttpStatus.OK);
+//	}
 	
 	// 게시글 수정하기(GET)
 	//@GetMapping("update")

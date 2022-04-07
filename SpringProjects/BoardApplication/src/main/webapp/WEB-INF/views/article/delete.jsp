@@ -23,6 +23,7 @@
 			<tr>
 				<td colspan="2" align="center">
 					<input type="submit" value="삭제" />
+					<input type="button" value="취소" onClick="window.location.href='../?vno=${vno}'" />
 				</td>
 			</tr>
 		</table>

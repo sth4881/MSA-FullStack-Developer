@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.kosa.app.dto.ArticleDTO;
+import com.kosa.app.dto.AttachDTO;
 
 public interface AppMapper {
 	long getArticleCount() throws Exception;
@@ -16,6 +17,8 @@ public interface AppMapper {
 	void updateViewCount(long ano) throws Exception;
 
 	int insertArticle(ArticleDTO dto) throws Exception;
+
+	int insertAttach(AttachDTO dto) throws Exception;
 
 	int updateArticle(ArticleDTO dto) throws Exception;
 

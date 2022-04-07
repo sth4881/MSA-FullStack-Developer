@@ -30,14 +30,11 @@
 			</tr>
 			<tr>
 			   	<th>첨부파일</th>
-				<td><input type="file" id="attach" /></td>
-			</tr>
-			<tr>
-				<td colspan="2" align="center">
-					<button type="button" id="register">등록</button>
-				</td>
+				<td><input type="file" id="attach" multiple /></td>
 			</tr>
 		</table>
+		<button type="button" id="register">등록</button>
+		<input type="button" value="취소" onClick="window.location.href='./'" />
 	</form>
 </body>
 <script type="text/javascript" src="<c:url value='/webjars/jquery/3.6.0/dist/jquery.js' />"></script>
@@ -87,6 +84,30 @@
 				}
 			});
 		});
+		
+		// 파일 업로드 전 미리보기
+		function showUploadedImage(input) {
+			var str = "";
+			$(uploadResultArr).each(function(i, obj) {
+				if(!obj.image) {
+					var fileCallPath = obj.uploadPath + encodeURIComponent(obj.fileName);
+					var fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
+					str += "<li><div><a href='${app}/download?fileName=" + fileCallPath + "'>" 
+						+ "<img src='./resources/img/attach.png'>" + obj.fileName + "</a>"
+						+ "<span data-file=\'" + fileCallPath + "\' data-type='file' class='span_del'> x </span><div></li>";
+				} else {
+					//str += "<li>" + obj.fileName + "</li>";
+					var fileCallPath = obj.uploadPath + "/s_" + encodeURIComponent(obj.fileName);
+					var originPath = obj.uploadPath + "\\" + obj.fileName;
+					originPath = originPath.replace(new RegExp(/\\/g), "/");
+					//str += "<li><img src='${app}/display?fileName=" +  encodedFileName + "'><li>";
+					str += "<li><a href=\"javascript:showImage(\'" + originPath + "\')\">"
+						+ "<img src='${app}/display?fileName=" + fileCallPath + "'></a>"
+						+ "<span data-file=\'" + fileCallPath + "\' data-type='image' class='span_del'> x </span></li>";
+				}
+			});
+			uploadResult.append(str);
+		}
 	});
 </script>
 </html>

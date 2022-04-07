@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -107,8 +106,10 @@ public class ArticleController {
 	public String insertArticle(
 		@RequestParam String title, @RequestParam String author,
 		@RequestParam String password, @RequestParam String content,
-		MultipartFile[] attach, Model model) {
+		@PathVariable long page, MultipartFile[] attach, Model model) {
 		try {
+			model.addAttribute("page", page);
+			
 			ArticleDTO articleDTO = new ArticleDTO();
 			articleDTO.setTitle(title); articleDTO.setAuthor(author);
 			articleDTO.setPassword(password); articleDTO.setContent(content);
@@ -121,16 +122,15 @@ public class ArticleController {
 				uploadPath.mkdirs();
 			}
 			
-			List<AttachDTO> list = new ArrayList<>();
+			//List<AttachDTO> list = new ArrayList<>();
 			for(MultipartFile file : attach) {
 				log.info("------------------------------------------------");
-				log.info("Upload File Name : " + file.getOriginalFilename());
-				log.info("Upload File Size : " + file.getSize());
+				log.info("Original File Name : " + file.getOriginalFilename());
+				log.info("Original File Size : " + file.getSize());
 				
 				String uploadFileName = file.getOriginalFilename();
-				uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\")+1);
-				log.info("Only File Name : " + uploadFileName);
-				
+				//uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\")+1);
+				log.info("Upload File Name : " + uploadFileName);
 				try {
 					//File saveFile = new File(uploadFolder, uploadFileName);
 					File saveFile = new File(uploadPath, uploadFileName);
@@ -140,12 +140,21 @@ public class ArticleController {
 					attachDTO.setAno(articleDTO.getAno());
 					attachDTO.setFname(uploadFileName);
 					if(checkImageType(saveFile)) {
-						attachDTO.setImage(true);
+						attachDTO.setImage(1);
+						
 						FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
 						Thumbnailator.createThumbnail(file.getInputStream(), thumbnail, 100, 100);
 						thumbnail.close();
+
+						// 썸네일용 AttachDTO 생성
+						AttachDTO s_attachDTO = new AttachDTO();
+						s_attachDTO.setAno(articleDTO.getAno());
+						s_attachDTO.setFname("s_"+uploadFileName);
+						s_attachDTO.setImage(1);
+						service.insertAttach(s_attachDTO);
 					}
-					list.add(attachDTO);
+					//list.add(attachDTO);
+					service.insertAttach(attachDTO);
 				} catch (Exception e) {
 					log.info(e.getMessage());
 					return "2";

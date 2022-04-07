@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.kosa.app.dto.ArticleDTO;
+import com.kosa.app.dto.AttachDTO;
 import com.kosa.app.mapper.AppMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -42,6 +43,11 @@ public class AppServiceImpl implements AppService {
 		return dto;
 	}
 
+	@Override
+	public void insertAttach(AttachDTO dto) throws Exception {
+		dao.insertAttach(dto);
+	}
+	
 	@Override
 	public void insertArticle(ArticleDTO dto) throws Exception {
 		dao.insertArticle(dto);
