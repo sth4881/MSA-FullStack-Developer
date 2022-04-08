@@ -1,12 +1,18 @@
 package com.kosa.app.controller;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kosa.app.dto.ArticleDTO;
 import com.kosa.app.dto.AttachDTO;
-import com.kosa.app.service.AppService;
+import com.kosa.app.service.ArticleService;
 
 import lombok.extern.log4j.Log4j;
 
@@ -25,10 +31,29 @@ import lombok.extern.log4j.Log4j;
 @Controller
 @RequestMapping("board/{page}/{ano}")
 public class DetailController {
+	@Value("${uploadFolder}")
+	private String uploadFolder; // 파일 업로드 경로
+	
 	// 생성자 주입
-	private AppService service;
-	public DetailController(AppService service) {
+	private ArticleService service;
+	public DetailController(ArticleService service) {
 		this.service = service;
+	}
+	
+	public static String encodeURIComponent(String str) {
+		String result = null;
+		try {
+			result = URLEncoder.encode(str, "UTF-8")
+							 .replaceAll("\\+", "%20")
+							 .replaceAll("\\%21", "!")
+							 .replaceAll("\\%27", "'")
+							 .replaceAll("\\%28", "(")
+							 .replaceAll("\\%29", ")")
+							 .replaceAll("\\%7E", "~");
+	    } catch (UnsupportedEncodingException e) {
+	    	result = str;
+	    }
+	    return result;
 	}
 	
 	// 게시글 상세보기
@@ -40,9 +65,17 @@ public class DetailController {
 		Model model) {
 		try {
 			ArticleDTO dto = service.getArticleDetail(ano);
+			model.addAttribute("articleDTO", dto);
 			model.addAttribute("page", page);
-			model.addAttribute("dto", dto);
 			model.addAttribute("vno", vno); // detail.jsp로 값을 보내주기 위해서 사용
+			
+			List<AttachDTO> list = service.getAttachList(ano);
+			for(AttachDTO item : list) {
+				item.setFpath(encodeURIComponent(item.getFpath()));
+				log.info(item);
+			}
+			model.addAttribute("attachList", list);
+			
 			return "article.detail";
 		} catch (Exception e) {
 			model.addAttribute("msg", e.getMessage());
@@ -51,12 +84,21 @@ public class DetailController {
 		}
 	}
 	
-	// 특정 게시물의 첨부파일 목록을 모두 가져와서 전송
-//	@GetMapping(value="/display", produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-//	@ResponseBody
-//	public ResponseEntity<List<AttachDTO>> getAttachList(long ano) {
-//		return new ResponseEntity<>(service.getAttachList(ano), HttpStatus.OK);
-//	}
+	// 첨부파일 데이터 전송
+	@GetMapping("display")
+	@ResponseBody
+	public ResponseEntity<byte[]> getAttachFile(String fname) {
+		File file = new File(uploadFolder + fname);
+		try {
+			HttpHeaders header = new HttpHeaders();
+			header.add("Content-Type", Files.probeContentType(file.toPath()));
+			ResponseEntity<byte[]> result = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	// 게시글 수정하기(GET)
 	//@GetMapping("update")

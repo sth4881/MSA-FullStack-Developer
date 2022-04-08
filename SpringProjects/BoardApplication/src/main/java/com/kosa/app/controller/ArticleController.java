@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kosa.app.dto.ArticleDTO;
 import com.kosa.app.dto.AttachDTO;
-import com.kosa.app.service.AppService;
+import com.kosa.app.service.ArticleService;
 
 import lombok.extern.log4j.Log4j;
 import net.coobird.thumbnailator.Thumbnailator;
@@ -39,8 +39,8 @@ public class ArticleController {
 	private String uploadFolder; // 파일 업로드 경로
 	
 	// 생성자 주입
-	private AppService service;
-	public ArticleController(AppService service) {
+	private ArticleService service;
+	public ArticleController(ArticleService service) {
 		this.service = service;
 	}
 	
@@ -117,7 +117,6 @@ public class ArticleController {
 			
 			String uploadFolderPath = getFolder();
 			File uploadPath = new File(uploadFolder, uploadFolderPath);
-			log.info("Upload Path : " + uploadPath);
 			if(uploadPath.exists()==false) {
 				uploadPath.mkdirs();
 			}
@@ -139,19 +138,13 @@ public class ArticleController {
 					AttachDTO attachDTO = new AttachDTO();
 					attachDTO.setAno(articleDTO.getAno());
 					attachDTO.setFname(uploadFileName);
+					attachDTO.setFpath(uploadFolderPath);
 					if(checkImageType(saveFile)) {
-						attachDTO.setImage(1);
+						attachDTO.setFtype(1);
 						
 						FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
 						Thumbnailator.createThumbnail(file.getInputStream(), thumbnail, 100, 100);
 						thumbnail.close();
-
-						// 썸네일용 AttachDTO 생성
-						AttachDTO s_attachDTO = new AttachDTO();
-						s_attachDTO.setAno(articleDTO.getAno());
-						s_attachDTO.setFname("s_"+uploadFileName);
-						s_attachDTO.setImage(1);
-						service.insertAttach(s_attachDTO);
 					}
 					//list.add(attachDTO);
 					service.insertAttach(attachDTO);

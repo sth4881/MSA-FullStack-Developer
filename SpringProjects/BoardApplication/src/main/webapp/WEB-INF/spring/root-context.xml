@@ -22,8 +22,15 @@
 	
 	<!-- MyBatis는 SqlSessionFactoryBean을 MapperFactoryBean에 주입해서 사용한다. -->
 	<!-- MapperFactoryBean은 인터페이스로 만들어진 DAO의 구현체를 생성하는 역할을 수행한다. -->
-	<bean id="mapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	<bean id="aricleMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="sqlSessionFactory" ref="appSqlSession" />
-		<property name="mapperInterface" value="com.kosa.app.mapper.AppMapper" />
+		<property name="mapperInterface" value="com.kosa.app.mapper.ArticleMapper" />
+	</bean>
+	
+	<!-- MyBatis는 SqlSessionFactoryBean을 MapperFactoryBean에 주입해서 사용한다. -->
+	<!-- MapperFactoryBean은 인터페이스로 만들어진 DAO의 구현체를 생성하는 역할을 수행한다. -->
+	<bean id="commentMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="sqlSessionFactory" ref="appSqlSession" />
+		<property name="mapperInterface" value="com.kosa.app.mapper.CommentMapper" />
 	</bean>
 </beans>
