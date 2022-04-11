@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,9 +13,6 @@
 			</td>
 		</tr>
 		<tr>
-			<td>
-				<tiles:insertAttribute name="menu" />
-			</td>
 			<td>
 				<tiles:insertAttribute name="body" />
 			</td>

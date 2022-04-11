@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kosa.app.mapper.ReplyMapper">
+	<insert id="insertReply" parameterType="ReplyDTO">
+		INSERT INTO t_reply(rno, content, author, password, ano)
+		VALUES(t_reply_no_seq.nextval, #{content}, #{author}, #{password}, #{ano})
+	</insert>
+	
+	<select id="getReplyList" resultType="ReplyDTO">
+		SELECT content, author, createdAt FROM t_reply WHERE ano=#{ano}
+	</select>
+
+	<update id="updateReply" parameterType="ReplyDTO">
+		UPDATE t_reply SET content=#{content}, author=#{author} WHERE ano=#{ano} AND password=#{password}
+	</update>
+	
+	<delete id="deleteReply" parameterType="ReplyDTO">
+		DELETE FROM t_reply WHERE ano=#{ano} AND password=#{password}
+	</delete>
+</mapper>

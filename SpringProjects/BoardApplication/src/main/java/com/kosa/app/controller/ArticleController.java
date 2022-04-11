@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -35,8 +36,8 @@ public class ArticleController {
 	@Value("${blockPerPage}")
 	private int blockPerPage; // 한 페이지에 보여지는 페이지 블록의 개수
 	
-	@Value("${uploadFolder}")
-	private String uploadFolder; // 파일 업로드 경로
+	@Value("${uploadPath}")
+	private String uploadPath; // 파일 업로드 경로
 	
 	// 생성자 주입
 	private ArticleService service;
@@ -44,7 +45,8 @@ public class ArticleController {
 		this.service = service;
 	}
 	
-	private String getFolder() {
+	// 오늘 날짜의 경로를 문자열로 생성하는 메소드
+	private String getFolderPath() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String str = sdf.format(new Date());
 		return str.replace("-", "/");
@@ -115,38 +117,34 @@ public class ArticleController {
 			articleDTO.setPassword(password); articleDTO.setContent(content);
 			service.insertArticle(articleDTO);
 			
-			String uploadFolderPath = getFolder();
-			File uploadPath = new File(uploadFolder, uploadFolderPath);
-			if(uploadPath.exists()==false) {
-				uploadPath.mkdirs();
+			File uploadFile = new File(uploadPath, getFolderPath());
+			if(uploadFile.exists()==false) {
+				uploadFile.mkdirs();
 			}
 			
-			//List<AttachDTO> list = new ArrayList<>();
-			for(MultipartFile file : attach) {
+			for(MultipartFile multipartFile : attach) {
 				log.info("------------------------------------------------");
-				log.info("Original File Name : " + file.getOriginalFilename());
-				log.info("Original File Size : " + file.getSize());
+				log.info("Original File Name : " + multipartFile.getOriginalFilename());
+				log.info("Original File Size : " + multipartFile.getSize());
 				
-				String uploadFileName = file.getOriginalFilename();
-				//uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\")+1);
-				log.info("Upload File Name : " + uploadFileName);
+				UUID uuid = UUID.randomUUID();
+				String uploadFileName = multipartFile.getOriginalFilename();
+				uploadFileName = uuid.toString() + "_" + uploadFileName;
 				try {
-					//File saveFile = new File(uploadFolder, uploadFileName);
-					File saveFile = new File(uploadPath, uploadFileName);
-					file.transferTo(saveFile);
+					File saveFile = new File(uploadFile, uploadFileName);
+					multipartFile.transferTo(saveFile);
 					
 					AttachDTO attachDTO = new AttachDTO();
 					attachDTO.setAno(articleDTO.getAno());
-					attachDTO.setFname(uploadFileName);
-					attachDTO.setFpath(uploadFolderPath);
+					attachDTO.setUuid(uuid.toString());
+					attachDTO.setFname(multipartFile.getOriginalFilename());
+					attachDTO.setFpath(getFolderPath());
 					if(checkImageType(saveFile)) {
 						attachDTO.setFtype(1);
-						
-						FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
-						Thumbnailator.createThumbnail(file.getInputStream(), thumbnail, 100, 100);
+						FileOutputStream thumbnail = new FileOutputStream(new File(uploadFile, "s_" + uploadFileName));
+						Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
 						thumbnail.close();
 					}
-					//list.add(attachDTO);
 					service.insertAttach(attachDTO);
 				} catch (Exception e) {
 					log.info(e.getMessage());

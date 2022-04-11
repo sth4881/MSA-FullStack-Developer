@@ -26,7 +26,7 @@
 	
 	<!-- 게시물 첨부파일 조회 -->
 	<select id="getAttachList" parameterType="AttachDTO" resultType="AttachDTO">
-		SELECT fname, fpath, ftype FROM t_attach WHERE ano = #{ano}
+		SELECT uuid, fname, fpath, ftype FROM t_attach WHERE ano = #{ano}
 	</select>
 	
 	<!-- 게시물 조회수 증가 -->
@@ -41,8 +41,8 @@
 	</insert>
 	
 	<insert id="insertAttach" parameterType="AttachDTO">
-		INSERT INTO t_attach(fno, fname, fpath, ftype, ano)
-		VALUES(t_attach_no_seq.nextval, #{fname}, #{fpath}, #{ftype}, #{ano})
+		INSERT INTO t_attach(uuid, fname, fpath, ftype, ano)
+		VALUES(#{uuid}, #{fname}, #{fpath}, #{ftype}, #{ano})
 	</insert>
 	
 	<!-- 게시글 수정하기 -->

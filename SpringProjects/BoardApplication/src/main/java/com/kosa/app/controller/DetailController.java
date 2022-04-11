@@ -7,8 +7,11 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,8 +34,8 @@ import lombok.extern.log4j.Log4j;
 @Controller
 @RequestMapping("board/{page}/{ano}")
 public class DetailController {
-	@Value("${uploadFolder}")
-	private String uploadFolder; // 파일 업로드 경로
+	@Value("${uploadPath}")
+	private String uploadPath; // 파일 업로드 경로
 	
 	// 생성자 주입
 	private ArticleService service;
@@ -87,17 +90,43 @@ public class DetailController {
 	// 첨부파일 데이터 전송
 	@GetMapping("display")
 	@ResponseBody
-	public ResponseEntity<byte[]> getAttachFile(String fname) {
-		File file = new File(uploadFolder + fname);
+	public ResponseEntity<byte[]> getAttachFile(String fname) { // 브라우저에 보내주는 파일 종류에 따라 MIME 타입이 달라진다.
+		// 업로드 파일 경로 + 파일명으로 파일 생성
+		File file = new File(uploadPath + fname);
 		try {
 			HttpHeaders header = new HttpHeaders();
-			header.add("Content-Type", Files.probeContentType(file.toPath()));
-			ResponseEntity<byte[]> result = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
-			return result;
+			// 적절한 MIME 타입 데이터를 Http의 헤더 메시지에 포함되도록 처리한다.
+			header.add("Content-Type", Files.probeContentType(file.toPath())); 
+			return new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	// 첨부파일 다운로드
+	@GetMapping(value="download", produces=MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@ResponseBody
+	public ResponseEntity<Resource> downloadFile(String fname) {
+		Resource resource = new FileSystemResource(uploadPath + fname);
+		if(!resource.exists()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		String resourceName = resource.getFilename();
+		String resourceOriginalName = resourceName.substring(resourceName.indexOf("_") + 1);
+		HttpHeaders headers = new HttpHeaders();
+		log.info("Resource : " + resource);
+		log.info("Resource Name : " + resourceName);
+		log.info("Resource Original Name : " + resourceOriginalName);
+		try {
+			// 파일 이름이 한글인 경우 저장할 때 깨지는 문제를 막기 위해서
+			// 다운로드 시 저장되는 이름은 'Content-Disposition'을 이용해서 지정한다.
+			String downloadName = new String(resourceOriginalName.getBytes("utf-8"), "ISO-8859-1");
+			headers.add("Content-Disposition,", "attachment;fname=" + downloadName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 	}
 	
 	// 게시글 수정하기(GET)

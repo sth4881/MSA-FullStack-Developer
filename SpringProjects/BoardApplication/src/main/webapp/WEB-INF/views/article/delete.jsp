@@ -9,7 +9,6 @@
 <body>
 	<form method="post">
 		<table>
-			<caption>게시물 삭제</caption>
 			<tr>
 				<th>글번호</th>
 				<td>${vno}</td>
