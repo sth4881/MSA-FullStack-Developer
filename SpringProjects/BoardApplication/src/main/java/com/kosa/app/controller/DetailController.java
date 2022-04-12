@@ -121,8 +121,8 @@ public class DetailController {
 		try {
 			// 파일 이름이 한글인 경우 저장할 때 깨지는 문제를 막기 위해서
 			// 다운로드 시 저장되는 이름은 'Content-Disposition'을 이용해서 지정한다.
-			String downloadName = new String(resourceOriginalName.getBytes("utf-8"), "ISO-8859-1");
-			headers.add("Content-Disposition,", "attachment;fname=" + downloadName);
+			String downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");
+			headers.add("Content-Disposition", "attachment;filename=" + downloadName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
