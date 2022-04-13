@@ -47,15 +47,15 @@ public class ArticleServiceImpl implements ArticleService {
 	public List<AttachDTO> getAttachList(long ano) throws Exception {
 		return dao.getAttachList(ano); // 게시물 번호(ano)에 대한 첨부파일 리스트 반환
 	}
+
+	@Override
+	public void insertArticle(ArticleDTO dto) throws Exception {
+		dao.insertArticle(dto);
+	}
 	
 	@Override
 	public void insertAttach(AttachDTO dto) throws Exception {
 		dao.insertAttach(dto);
-	}
-	
-	@Override
-	public void insertArticle(ArticleDTO dto) throws Exception {
-		dao.insertArticle(dto);
 	}
 
 	@Override

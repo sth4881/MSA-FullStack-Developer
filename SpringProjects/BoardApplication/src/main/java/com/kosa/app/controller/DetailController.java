@@ -43,22 +43,6 @@ public class DetailController {
 		this.service = service;
 	}
 	
-	public static String encodeURIComponent(String str) {
-		String result = null;
-		try {
-			result = URLEncoder.encode(str, "UTF-8")
-							 .replaceAll("\\+", "%20")
-							 .replaceAll("\\%21", "!")
-							 .replaceAll("\\%27", "'")
-							 .replaceAll("\\%28", "(")
-							 .replaceAll("\\%29", ")")
-							 .replaceAll("\\%7E", "~");
-	    } catch (UnsupportedEncodingException e) {
-	    	result = str;
-	    }
-	    return result;
-	}
-	
 	// 게시글 상세보기
 	@GetMapping("/")
 	public String detail(
@@ -74,7 +58,7 @@ public class DetailController {
 			
 			List<AttachDTO> list = service.getAttachList(ano);
 			for(AttachDTO item : list) {
-				item.setFpath(encodeURIComponent(item.getFpath()));
+//				item.setFpath(encodeURIComponent(item.getFpath()));
 				log.info(item);
 			}
 			model.addAttribute("attachList", list);

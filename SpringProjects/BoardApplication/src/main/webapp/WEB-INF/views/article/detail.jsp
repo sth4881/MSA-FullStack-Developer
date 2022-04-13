@@ -15,7 +15,6 @@
 	<style>
 		.attachResult {
 			width : 100%;
-			background-color : gray;
 		}
 		.attachResult ul {
 			display-flex;
@@ -68,59 +67,59 @@
 		</tr>
 	</table>
 	
-	<c:forEach var="attachDTO" items="${attachList}">
-		<c:choose>
-			<c:when test="${attachDTO.ftype eq 1}">
-				<!-- 첨부파일이 이미지인 경우 썸네일 표시 -->
-				<img src="<c:url value='display?fname=${attachDTO.fpath}/s_${attachDTO.uuid}_${attachDTO.fname}'/>" />
-			</c:when>
-			<c:otherwise>
-				<a href="<c:url value='download?fname=${attachDTO.fpath}/${attachDTO.uuid}_${attachDTO.fname}'/>">
-					<!-- 첨부파일이 이미지가 아닌 경우 attach.png 표시 -->
-					<img src="${app}/resources/img/attach.png" style="width : 100px" />
-                   </a>
-			</c:otherwise>
-		</c:choose>
-	</c:forEach>
+	<div class="attachResult">
+		<c:forEach var="attachDTO" items="${attachList}">
+			<c:choose>
+				<c:when test="${attachDTO.ftype eq 1}">
+					<!-- 첨부파일이 이미지인 경우 썸네일 표시 -->
+					<a href="javascript:;" data-fpath="${attachDTO.fpath}" data-uuid="${attachDTO.uuid}" data-fname="${attachDTO.fname}" data-ftype="${attachDTO.ftype}">
+						<img src="<c:url value='display?fname=${attachDTO.fpath}/s_${attachDTO.uuid}_${attachDTO.fname}'/>" />
+					</a>
+				</c:when>
+				<c:otherwise>
+					<a href="<c:url value='download?fname=${attachDTO.fpath}/${attachDTO.uuid}_${attachDTO.fname}'/>">
+						<!-- 첨부파일이 이미지가 아닌 경우 attach.png 표시 -->
+						<img src="${app}/resources/img/attach.png" style="width : 100px" />
+					</a>
+				</c:otherwise>
+			</c:choose>
+		</c:forEach>
+	</div>
 	
-	<div id="attachResult">
+	<div class="bigPictureWrapper">
+		<div class="bigPicture">
 		
+		</div>
 	</div>
 	
 	<a href="${vno}/update">게시글 수정</a> |
 	<a href="${vno}/delete">게시글 삭제</a> |
 	<a href="../">목록</a>
 </body>
-<script>
-	function showImage(fileCallPath) {
+<script type="text/javascript" src="<c:url value="/webjars/jquery/3.6.0/dist/jquery.js" />"></script>
+<script type="text/javascript">
+	// 썸네일을 클릭하면 원본 이미지를 보여주는 메소드
+	function showBigImage(fileCallPath) {
 		$(".bigPictureWrapper").css("display", "flex").show();
 		$(".bigPicture")
 			.html("<img src='display?fname=" + encodeURI(fileCallPath) + "'>")
 			.animate({width:'100%', height:'100%'}, 1000);
 	}
+	
 	$(document).ready(function() {
-		// 파일 업로드 전 미리보기
-		function showUploadedImage(input) {
-			var str = "";
-			$(input).each(function(i, obj) {
-				if(!obj.image) {
-					var fileCallPath = obj.uploadPath + encodeURIComponent(obj.fileName);
-					var fileLink = fileCallPath.replace(new RegExp(/\\/g), "/");
-					str += "<li><div><a href='${app}/download?fileName=" + fileCallPath + "'>" 
-						+ "<img src='./resources/img/attach.png'>" + obj.fileName + "</a>"
-						+ "<span data-file=\'" + fileCallPath + "\' data-type='file' class='span_del'> x </span><div></li>";
-				} else {
-					//str += "<li>" + obj.fileName + "</li>";
-					var fileCallPath = obj.uploadPath + "/s_" + encodeURIComponent(obj.fileName);
-					var originPath = obj.uploadPath + "\\" + obj.fileName;
-					originPath = originPath.replace(new RegExp(/\\/g), "/");
-					//str += "<li><img src='${app}/display?fileName=" +  encodedFileName + "'><li>";
-					str += "<li><a href=\"javascript:showImage(\'" + originPath + "\')\">"
-						+ "<img src='${app}/display?fileName=" + fileCallPath + "'></a>"
-						+ "<span data-file=\'" + fileCallPath + "\' data-type='image' class='span_del'> x </span></li>";
-				}
-			});
-			uploadResult.append(str);
-		}
+		// 썸네일을 클릭하면 원본 이미지 표시
+		$(".attachResult").on("click", "a", function(e) {
+			var path = decodeURIComponent($(this).data("fpath")+"/" + $(this).data("uuid") + "_" + $(this).data("fname"));
+			if($(this).data("ftype")==1) {
+				showBigImage(path.replace(new RegExp(/\\/g), "/"));
+			}
+		});
+		
+		// 원본 이미지를 클릭하면 이미지 소멸
+		$(".bigPictureWrapper").on("click", function(e) {
+			$(".bigPicture").animate({width : '0%', height : '0%'}, 1000);
+			setTimeout(() => { $(this).hide(); }, 1000);
+		});
+	});
 </script>
 </html>
