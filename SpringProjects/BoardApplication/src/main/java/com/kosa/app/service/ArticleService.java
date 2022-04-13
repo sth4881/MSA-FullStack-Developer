@@ -14,10 +14,8 @@ public interface ArticleService {
 	
 	List<AttachDTO> getAttachList(long ano) throws Exception;
 	
-	void insertArticle(ArticleDTO dto) throws Exception;
+	void insertArticle(ArticleDTO dto, List<AttachDTO> list) throws Exception;
 
-	void insertAttachFile(AttachDTO dto) throws Exception;
-	
 	boolean updateArticle(ArticleDTO dto) throws Exception;
 
 	boolean deleteArticle(ArticleDTO dto) throws Exception;

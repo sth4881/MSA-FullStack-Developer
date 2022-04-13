@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -123,6 +124,7 @@ public class ArticleController {
 				uploadFile.mkdirs();
 			}
 			
+			List<AttachDTO> list = new ArrayList<>();
 			for(MultipartFile multipartFile : attach) {
 				log.info("------------------------------------------------");
 				log.info("Original File Name : " + multipartFile.getOriginalFilename());
@@ -136,19 +138,18 @@ public class ArticleController {
 				multipartFile.transferTo(saveFile);
 				
 				AttachDTO attachDTO = new AttachDTO();
-				attachDTO.setAno(articleDTO.getAno());
-				attachDTO.setUuid(uuid.toString());
 				attachDTO.setFname(multipartFile.getOriginalFilename());
 				attachDTO.setFpath(getFolderPath());
+				attachDTO.setUuid(uuid.toString());
 				if(checkImageType(saveFile)) {
 					attachDTO.setFtype(1);
 					FileOutputStream thumbnail = new FileOutputStream(new File(uploadFile, "s_" + uploadFileName));
 					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
 					thumbnail.close();
 				}
-				service.insertAttachFile(attachDTO);
+				list.add(attachDTO);
 			}
-			service.insertArticle(articleDTO);
+			service.insertArticle(articleDTO, list);
 		} catch (Exception e) {
 			log.info(e.getMessage());
 			return "2";

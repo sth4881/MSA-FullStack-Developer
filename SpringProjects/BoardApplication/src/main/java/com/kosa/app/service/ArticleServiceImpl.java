@@ -47,9 +47,19 @@ public class ArticleServiceImpl implements ArticleService {
 		return dto;
 	}
 
+	@Transactional
 	@Override
-	public void insertArticle(ArticleDTO dto) throws Exception {
-		articleMapper.insertArticle(dto);
+	public void insertArticle(ArticleDTO dto, List<AttachDTO> list) throws Exception {
+		articleMapper.insertArticle(dto); // 게시글을 생성
+		if(list == null || list.size() <= 0) return;
+		list.forEach(attach -> {
+			attach.setAno(dto.getAno()); // 게시글 생성 후에 만들어진 게시글 번호를 가져와서 첨부파일에 각각 넣어줌 
+			try {
+				attachMapper.insertAttachFile(attach);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	@Override
@@ -67,10 +77,5 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public List<AttachDTO> getAttachList(long ano) throws Exception {
 		return attachMapper.getAttachList(ano); // 게시물 번호(ano)에 대한 첨부파일 리스트 반환
-	}
-
-	@Override
-	public void insertAttachFile(AttachDTO dto) throws Exception {
-		attachMapper.insertAttachFile(dto);
 	}
 }
