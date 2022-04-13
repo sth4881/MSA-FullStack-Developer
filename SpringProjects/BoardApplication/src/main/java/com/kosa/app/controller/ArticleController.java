@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -103,6 +104,7 @@ public class ArticleController {
 	public String insertArticle() {
 		return "article.insert";
 	}
+	@Transactional
 	@PostMapping("insert")
 	@ResponseBody
 	public String insertArticle(
@@ -115,8 +117,7 @@ public class ArticleController {
 			ArticleDTO articleDTO = new ArticleDTO();
 			articleDTO.setTitle(title); articleDTO.setAuthor(author);
 			articleDTO.setPassword(password); articleDTO.setContent(content);
-			service.insertArticle(articleDTO);
-			
+
 			File uploadFile = new File(uploadPath, getFolderPath());
 			if(uploadFile.exists()==false) {
 				uploadFile.mkdirs();
@@ -130,27 +131,24 @@ public class ArticleController {
 				UUID uuid = UUID.randomUUID();
 				String uploadFileName = multipartFile.getOriginalFilename();
 				uploadFileName = uuid.toString() + "_" + uploadFileName;
-				try {
-					File saveFile = new File(uploadFile, uploadFileName);
-					multipartFile.transferTo(saveFile);
-					
-					AttachDTO attachDTO = new AttachDTO();
-					attachDTO.setAno(articleDTO.getAno());
-					attachDTO.setUuid(uuid.toString());
-					attachDTO.setFname(multipartFile.getOriginalFilename());
-					attachDTO.setFpath(getFolderPath());
-					if(checkImageType(saveFile)) {
-						attachDTO.setFtype(1);
-						FileOutputStream thumbnail = new FileOutputStream(new File(uploadFile, "s_" + uploadFileName));
-						Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
-						thumbnail.close();
-					}
-					service.insertAttach(attachDTO);
-				} catch (Exception e) {
-					log.info(e.getMessage());
-					return "2";
+
+				File saveFile = new File(uploadFile, uploadFileName);
+				multipartFile.transferTo(saveFile);
+				
+				AttachDTO attachDTO = new AttachDTO();
+				attachDTO.setAno(articleDTO.getAno());
+				attachDTO.setUuid(uuid.toString());
+				attachDTO.setFname(multipartFile.getOriginalFilename());
+				attachDTO.setFpath(getFolderPath());
+				if(checkImageType(saveFile)) {
+					attachDTO.setFtype(1);
+					FileOutputStream thumbnail = new FileOutputStream(new File(uploadFile, "s_" + uploadFileName));
+					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
+					thumbnail.close();
 				}
+				service.insertAttachFile(attachDTO);
 			}
+			service.insertArticle(articleDTO);
 		} catch (Exception e) {
 			log.info(e.getMessage());
 			return "2";

@@ -24,11 +24,6 @@
 		FROM t_article WHERE ano = #{ano}
 	</select>
 	
-	<!-- 게시물 첨부파일 조회 -->
-	<select id="getAttachList" parameterType="AttachDTO" resultType="AttachDTO">
-		SELECT uuid, fname, fpath, ftype FROM t_attach WHERE ano = #{ano}
-	</select>
-	
 	<!-- 게시물 조회수 증가 -->
 	<select id="updateViewCount" parameterType="ArticleDTO">
 		UPDATE t_article SET viewcount = viewcount+1 WHERE ano = #{ano}
@@ -40,19 +35,14 @@
 		VALUES(t_article_no_seq.nextval, #{title}, #{author}, #{password}, #{content})
 	</insert>
 	
-	<insert id="insertAttach" parameterType="AttachDTO">
-		INSERT INTO t_attach(uuid, fname, fpath, ftype, ano)
-		VALUES(#{uuid}, #{fname}, #{fpath}, #{ftype}, #{ano})
-	</insert>
-	
 	<!-- 게시글 수정하기 -->
 	<update id="updateArticle" parameterType="ArticleDTO">
 		UPDATE t_article SET title=#{title}, content=#{content}, updatedat=sysdate
-		WHERE ano=#{ano} AND password=#{password}
+		WHERE ano = #{ano} AND password = #{password}
 	</update>
 	
 	<!-- 게시글 삭제하기 -->
 	<delete id="deleteArticle" parameterType="ArticleDTO">
-		DELETE t_article WHERE ano=#{ano} AND password=#{password}
+		DELETE t_article WHERE ano = #{ano} AND password = #{password}
 	</delete>
 </mapper>

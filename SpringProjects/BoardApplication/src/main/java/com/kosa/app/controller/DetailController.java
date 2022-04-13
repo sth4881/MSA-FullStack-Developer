@@ -1,9 +1,9 @@
 package com.kosa.app.controller;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +41,29 @@ public class DetailController {
 	private ArticleService service;
 	public DetailController(ArticleService service) {
 		this.service = service;
+	}
+	
+	// 게시글에 포함된 파일들을 모두 삭제하는 메소드
+	public void deleteAttachFiles(List<AttachDTO> list) {
+		if(list == null || list.size() == 0) return;
+		log.info(list);
+		list.forEach(attach -> {
+			try {
+				// 원본 파일 삭제
+				Path source = Paths.get(uploadPath + attach.getFpath()
+				+ "\\" + attach.getUuid() + "_" + attach.getFname());
+				if(Files.deleteIfExists(source)) log.info("원본 삭제 성공");
+				
+				// 썸네일 삭제
+				if(Files.probeContentType(source).startsWith("image")) {
+					Path thumbnail = Paths.get(uploadPath + attach.getFpath()
+					+ "\\s_" + attach.getUuid() + "_" + attach.getFname());
+					if(Files.deleteIfExists(thumbnail)) log.info("썸네일 삭제 성공");
+				}
+			} catch (Exception e) {
+				log.error("File Deletion Error : " + e.getMessage());
+			}
+		});
 	}
 	
 	// 게시글 상세보기
@@ -140,7 +163,7 @@ public class DetailController {
 		Model model) {
 		log.info(dto.toString());
 		try {
-			service.updateArticle(dto);
+			if(service.updateArticle(dto)) log.info("수정 성공");
 			model.addAttribute("msg", vno + "번 게시물이 수정되었습니다.");
 			model.addAttribute("url", "../?vno=" + vno);
 		} catch (Exception e) {
@@ -166,12 +189,16 @@ public class DetailController {
 	@RequestMapping(value="/{vno}/delete", method=RequestMethod.POST)
 	public String delete(
 		@ModelAttribute ArticleDTO dto,
+		@PathVariable long ano,
 		@PathVariable long vno,
 		Model model) {
 		try {
-			log.info("삭제 성공");
-			service.deleteArticle(dto);
-			model.addAttribute("msg", vno + "번 게시물이 삭제되었습니다.");
+			List<AttachDTO> list = service.getAttachList(ano);
+			if(service.deleteArticle(dto)) {
+				deleteAttachFiles(list);
+				log.info("삭제 성공");
+			}
+			model.addAttribute("msg", vno + "번 게시물이 삭제됐습니다.");
 			model.addAttribute("url", "../../../1/");
 		} catch (Exception e) {
 			model.addAttribute("msg", e.getMessage());
