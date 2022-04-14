@@ -1,11 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="app" value="${pageContext.request.contextPath}" />
+<c:set var="source" value="${app}/resources/img/attach.png" />
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="UTF-8">
 	<title>새 게시물 쓰기</title>
+	<style>
+		
+	</style>
 </head>
 <body>
 	<form method='POST' enctype="multipart/form-data">
@@ -33,6 +38,11 @@
 				<td><input type="file" id="attach" multiple /></td>
 			</tr>
 		</table>
+		
+		<div id="preview">
+
+		</div>
+		
 		<button type="button" id="register">등록</button>
 		<input type="button" value="취소" onClick="window.location.href='./'" />
 	</form>
@@ -55,7 +65,36 @@
 			return true;
 		}
 		
-		// 파일 업로드
+		// 파일 내용이 변경될 때마다 썸네일 추가
+		$("#attach").on("change", function(e) {
+			var arr = Array.from(e.target.files);
+			arr.forEach((file, index) => {
+				var reader = new FileReader();
+				reader.onload = event => {
+					var img = document.createElement("img");
+					// 첨부파일 타입이 이미지 포맷이라면
+					if(file.type=="image/jpeg" || file.type=="image/png" || file.type=="image/gif") {
+						img.setAttribute("src", event.target.result);
+
+					}
+					// 첨부파일 타입이 이미지 포맷이 아니라면
+					else {
+						img.setAttribute("src", "${source}");
+					}
+					// 미리보기용 이미지 크기 줄이기
+					img.setAttribute("width", 100);
+					img.setAttribute("height", 100);
+					document.getElementById("preview").appendChild(img);
+				}
+				reader.readAsDataURL(file);
+			});
+		});
+		
+		// 파일 내용이 변경될 때마다 썸네일 삭제
+		
+		
+		// 파일 업로드 -> 첨부파일은 내용이 변경될 때마다 업로드하도록 변경할 것
+		// input 내용은 지금처럼 '등록' 버튼을 누를 때 전송하는 방식으로 처리할 것
 		$("#register").on("click", function(e) {
 			var formData = new FormData();
 			formData.append("title", $("#title").val());
@@ -63,6 +102,7 @@
 			formData.append("password", $("#password").val());
 			formData.append("content", $("#content").val());
 			
+			// '등록' 버튼을 눌렀을 때 남아있는 파일들을 서버로 업로드하도록 구현할 것
 			var attach = $("#attach");
 			var files = attach[0].files;
 			for(var i=0; i<files.length; i++) {
