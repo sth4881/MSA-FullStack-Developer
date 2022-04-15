@@ -3,7 +3,11 @@ package com.kosa.app.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,7 +16,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,6 +69,22 @@ public class ArticleController {
 		return false;
 	}
 	
+	// 게시글에 포함된 파일들을 모두 삭제하는 메소드
+	public void deleteAttachFile(List<AttachDTO> list) {
+		if(list == null || list.size() == 0) return;
+		log.info(list);
+		list.forEach(attach -> {
+			try {
+				// 원본 파일 삭제
+				Path source = Paths.get(uploadPath + attach.getFpath()
+				+ "\\" + attach.getUuid() + "_" + attach.getFname());
+				if(Files.deleteIfExists(source)) log.info("원본 삭제 성공");
+			} catch (Exception e) {
+				log.error("File Deletion Error : " + e.getMessage());
+			}
+		});
+	}
+	
 	// 게시글 목록 불러오기
 	@GetMapping("/")
 	public String getArticleList(@PathVariable("page") long page, Model model) {
@@ -101,18 +120,19 @@ public class ArticleController {
 		}
 	}
 	
-	// 게시글 등록하기
+	// 게시글 등록하기(GET)
 	@GetMapping("insert")
 	public String insertArticle() {
 		return "article.insert";
 	}
-	@Transactional
+
+	// 게시글 등록하기(POST)
 	@PostMapping("insert")
 	@ResponseBody // 클라이언트의 요청에 JSON 데이터 형식으로 응답하기 위해서 사용
 	public String insertArticle(
 		@RequestParam String title, @RequestParam String author,
 		@RequestParam String password, @RequestParam String content,
-		@PathVariable long page, MultipartFile[] attach, Model model) {
+		@PathVariable long page, Model model) {
 		try {
 			ArticleDTO articleDTO = new ArticleDTO();
 			articleDTO.setTitle(title); articleDTO.setAuthor(author);
@@ -156,9 +176,9 @@ public class ArticleController {
 	}
 	
 	// 파일을 추가할 때마다 업로드
-	@PostMapping("attach")
+	@PostMapping("uploadAttach")
 	@ResponseBody // 클라이언트의 요청에 JSON 데이터 형식으로 응답하기 위해서 사용
-	public String insertAttach(MultipartFile[] attach) {
+	public String uploadAttach(MultipartFile[] attach) {
 		try {
 			File uploadFolder = new File(uploadPath, "temp");
 			if(uploadFolder.exists()==false) {
@@ -176,6 +196,39 @@ public class ArticleController {
 			}
 		} catch(Exception e) {
 			log.info(e.getMessage());
+			return "2";
+		}
+		return "1";
+	}
+	
+	// 'X' 버튼을 눌러서 첨부파일을 삭제
+	@PostMapping("deleteAttach")
+	@ResponseBody
+	public String deleteAttach(String fileName) {
+		log.info(fileName);
+		try {
+			Path filePath = Paths.get(fileName);
+			Files.deleteIfExists(filePath);
+		} catch (DirectoryNotEmptyException e) {
+			log.info("Directory is not empty.");
+			return "3";
+		} catch (IOException e) {
+			log.info(e.getMessage());
+			return "2";
+		}
+		return "1";
+	}
+	
+	// '취소' 버튼을 눌러서 첨부파일 전체 삭제
+	@PostMapping("deleteAttachAll")
+	@ResponseBody
+	public String deleteAttachAll(String[] fileNames) {
+		try {
+			for(String fileName : fileNames) {
+				Path filePath = Paths.get(fileName);
+				Files.deleteIfExists(filePath);
+			}
+		} catch (Exception e) {
 			return "2";
 		}
 		return "1";
