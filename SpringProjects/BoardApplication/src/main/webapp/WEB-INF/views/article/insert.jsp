@@ -8,9 +8,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>새 게시물 쓰기</title>
-	<style>
-		
-	</style>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
 </head>
 <body>
 	<form method='POST' enctype="multipart/form-data">
@@ -65,32 +63,62 @@
 			return true;
 		}
 		
-		// 파일 내용이 변경될 때마다 썸네일 추가
+		// 파일을 추가할 때마다 업로드 및 미리보기 업데이트
 		$("#attach").on("change", function(e) {
+			var formData = new FormData();
+			var files = e.target.files;
+			for(var i=0; i<files.length; i++) {
+				if(!checkExtension(files[i].name, files[i].size)) return false;
+				formData.append("attach", files[i]);
+				console.log(files[i]);
+			}
+
+			$.ajax({
+				url : 'attach',
+				processData : false,
+				contentType : false,
+				data : formData,
+				type : 'POST',
+				success:function(result) {
+					if(result==1) console.log("업로드 성공");
+				}
+			});
+		
+			/*
 			var arr = Array.from(e.target.files);
 			arr.forEach((file, index) => {
 				var reader = new FileReader();
 				reader.onload = event => {
+					// 선택한 첨부파일을 생성하기 위한 img 태그 추가
 					var img = document.createElement("img");
 					// 첨부파일 타입이 이미지 포맷이라면
 					if(file.type=="image/jpeg" || file.type=="image/png" || file.type=="image/gif") {
 						img.setAttribute("src", event.target.result);
-
+						img.setAttribute("width", 100);
+						img.setAttribute("height", 100);
 					}
 					// 첨부파일 타입이 이미지 포맷이 아니라면
 					else {
 						img.setAttribute("src", "${source}");
+						img.setAttribute("width", 150);
+						img.setAttribute("height", 100);
 					}
-					// 미리보기용 이미지 크기 줄이기
-					img.setAttribute("width", 100);
-					img.setAttribute("height", 100);
+		
+					// 첨부파일을 삭제하기 위한 button 추가
+					var cancel = document.createElement("button");
+					cancel.setAttribute("class", "btn btn-danger btn-circle");
+					
+					// preview에 첨부파일 및 버튼 추가
 					document.getElementById("preview").appendChild(img);
+					document.getElementById("preview").appendChild(cancel);
 				}
 				reader.readAsDataURL(file);
 			});
+			*/
 		});
 		
-		// 파일 내용이 변경될 때마다 썸네일 삭제
+		// 'X' 표시 버튼 누르면 파일 이미지 삭제
+		
 		
 		
 		// 파일 업로드 -> 첨부파일은 내용이 변경될 때마다 업로드하도록 변경할 것
@@ -102,13 +130,14 @@
 			formData.append("password", $("#password").val());
 			formData.append("content", $("#content").val());
 			
-			// '등록' 버튼을 눌렀을 때 남아있는 파일들을 서버로 업로드하도록 구현할 것
+			/*
 			var attach = $("#attach");
 			var files = attach[0].files;
 			for(var i=0; i<files.length; i++) {
 				if(!checkExtension(files[i].name, files[i].size)) return false;
 				formData.append("attach", files[i]);
 			}
+			*/
 
 			$.ajax({
 				url : '',

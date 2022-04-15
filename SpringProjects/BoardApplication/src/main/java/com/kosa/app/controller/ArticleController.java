@@ -1,6 +1,7 @@
 package com.kosa.app.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
@@ -107,50 +108,73 @@ public class ArticleController {
 	}
 	@Transactional
 	@PostMapping("insert")
-	@ResponseBody
+	@ResponseBody // 클라이언트의 요청에 JSON 데이터 형식으로 응답하기 위해서 사용
 	public String insertArticle(
 		@RequestParam String title, @RequestParam String author,
 		@RequestParam String password, @RequestParam String content,
 		@PathVariable long page, MultipartFile[] attach, Model model) {
 		try {
-			model.addAttribute("page", page);
-			
 			ArticleDTO articleDTO = new ArticleDTO();
 			articleDTO.setTitle(title); articleDTO.setAuthor(author);
 			articleDTO.setPassword(password); articleDTO.setContent(content);
 
-			File uploadFile = new File(uploadPath, getFolderPath());
-			if(uploadFile.exists()==false) {
-				uploadFile.mkdirs();
+			File uploadFolder = new File(uploadPath, getFolderPath());
+			if(uploadFolder.exists()==false) {
+				uploadFolder.mkdirs();
 			}
 			
 			List<AttachDTO> list = new ArrayList<>();
+			for(File tempFile : new File(uploadPath, "temp").listFiles()) { 
+				UUID uuid = UUID.randomUUID();
+				String uploadFileName = tempFile.getName();
+				uploadFileName = uuid.toString() + "_" + uploadFileName;
+				
+				// temp 폴더에 존재하는 파일들을 업로드용 폴더로 이동
+				File saveFile = new File(uploadFolder, uploadFileName);
+				if(tempFile.renameTo(saveFile)) log.info("파일 업로드 성공 : " + uploadFileName);
+				
+				AttachDTO attachDTO = new AttachDTO();
+				attachDTO.setFname(tempFile.getName());
+				attachDTO.setFpath(getFolderPath());
+				attachDTO.setUuid(uuid.toString());
+				if(checkImageType(saveFile)) {
+					attachDTO.setFtype(1);
+					FileOutputStream thumbnail = new FileOutputStream(new File(uploadFolder, "s_" + uploadFileName));
+					Thumbnailator.createThumbnail(new FileInputStream(saveFile), thumbnail, 100, 100);
+					thumbnail.close();
+				}
+				list.add(attachDTO);
+			}
+			
+			service.insertArticle(articleDTO, list);
+			model.addAttribute("page", page);
+		} catch (Exception e) {
+			log.info(e.getMessage());
+			return "2";
+		}
+		return "1";
+	}
+	
+	// 파일을 추가할 때마다 업로드
+	@PostMapping("attach")
+	@ResponseBody // 클라이언트의 요청에 JSON 데이터 형식으로 응답하기 위해서 사용
+	public String insertAttach(MultipartFile[] attach) {
+		try {
+			File uploadFolder = new File(uploadPath, "temp");
+			if(uploadFolder.exists()==false) {
+				uploadFolder.mkdirs();
+			}
+			
 			for(MultipartFile multipartFile : attach) {
 				log.info("------------------------------------------------");
 				log.info("Original File Name : " + multipartFile.getOriginalFilename());
 				log.info("Original File Size : " + multipartFile.getSize());
 				
-				UUID uuid = UUID.randomUUID();
 				String uploadFileName = multipartFile.getOriginalFilename();
-				uploadFileName = uuid.toString() + "_" + uploadFileName;
-
-				File saveFile = new File(uploadFile, uploadFileName);
+				File saveFile = new File(uploadFolder, uploadFileName);
 				multipartFile.transferTo(saveFile);
-				
-				AttachDTO attachDTO = new AttachDTO();
-				attachDTO.setFname(multipartFile.getOriginalFilename());
-				attachDTO.setFpath(getFolderPath());
-				attachDTO.setUuid(uuid.toString());
-				if(checkImageType(saveFile)) {
-					attachDTO.setFtype(1);
-					FileOutputStream thumbnail = new FileOutputStream(new File(uploadFile, "s_" + uploadFileName));
-					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
-					thumbnail.close();
-				}
-				list.add(attachDTO);
 			}
-			service.insertArticle(articleDTO, list);
-		} catch (Exception e) {
+		} catch(Exception e) {
 			log.info(e.getMessage());
 			return "2";
 		}
