@@ -144,7 +144,8 @@ public class ArticleController {
 			}
 			
 			List<AttachDTO> list = new ArrayList<>();
-			for(File tempFile : new File(uploadPath, "temp").listFiles()) { 
+			File tempUploadFolder = new File(uploadPath+"temp");
+			for(File tempFile : tempUploadFolder.listFiles()) { 
 				UUID uuid = UUID.randomUUID();
 				String uploadFileName = tempFile.getName();
 				uploadFileName = uuid.toString() + "_" + uploadFileName;
@@ -175,12 +176,12 @@ public class ArticleController {
 		return "1";
 	}
 	
-	// 파일을 추가할 때마다 업로드
+	// 게시글 쓰기 페이지에서 파일을 추가할 때마다 업로드
 	@PostMapping("uploadAttach")
 	@ResponseBody // 클라이언트의 요청에 JSON 데이터 형식으로 응답하기 위해서 사용
 	public String uploadAttach(MultipartFile[] attach) {
 		try {
-			File uploadFolder = new File(uploadPath, "temp");
+			File uploadFolder = new File(uploadPath+"temp");
 			if(uploadFolder.exists()==false) {
 				uploadFolder.mkdirs();
 			}
@@ -201,14 +202,16 @@ public class ArticleController {
 		return "1";
 	}
 	
-	// 'X' 버튼을 눌러서 첨부파일을 삭제
+	// 게시글 쓰기 페이지에서 'X' 버튼을 눌러서 첨부파일을 삭제
 	@PostMapping("deleteAttach")
 	@ResponseBody
 	public String deleteAttach(String fileName) {
 		log.info(fileName);
 		try {
-			Path filePath = Paths.get(fileName);
+			File tempFile = new File(uploadPath+"temp", fileName);
+			Path filePath = Paths.get(tempFile.getAbsolutePath());
 			Files.deleteIfExists(filePath);
+			log.info("파일 삭제 성공 : " +tempFile.getAbsolutePath());
 		} catch (DirectoryNotEmptyException e) {
 			log.info("Directory is not empty.");
 			return "3";
@@ -219,16 +222,22 @@ public class ArticleController {
 		return "1";
 	}
 	
-	// '취소' 버튼을 눌러서 첨부파일 전체 삭제
+	// 게시글 쓰기 페이지에서 '취소' 버튼을 눌러서 첨부파일 전체 삭제
 	@PostMapping("deleteAttachAll")
 	@ResponseBody
-	public String deleteAttachAll(String[] fileNames) {
+	public String deleteAttachAll() {
 		try {
-			for(String fileName : fileNames) {
-				Path filePath = Paths.get(fileName);
+			File tempUploadFolder = new File(uploadPath+"temp");
+			for(File tempFile : tempUploadFolder.listFiles()) {
+				Path filePath = Paths.get(tempFile.getAbsolutePath());
 				Files.deleteIfExists(filePath);
+				log.info("파일 삭제 성공 : " +tempFile.getAbsolutePath());
 			}
+		} catch (DirectoryNotEmptyException e) {
+			log.info("Directory is not empty.");
+			return "3";
 		} catch (Exception e) {
+			log.info(e.getMessage());
 			return "2";
 		}
 		return "1";

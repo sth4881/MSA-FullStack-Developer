@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="app" value="${pageContext.request.contextPath}" />
 <c:set var="source" value="${app}/resources/img/attach.png" />
-<c:set var="path" value="C:/Users/SJH/Hyundai/upload/temp/" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -66,8 +65,8 @@
 		
 		// 파일을 추가할 때마다 업로드 및 미리보기 업데이트
 		$("#attach").on("change", function(e) {
-			var formData = new FormData();
 			var files = e.target.files;
+			var formData = new FormData();
 			for(var i=0; i<files.length; i++) {
 				if(!checkExtension(files[i].name, files[i].size)) return false;
 				formData.append("attach", files[i]);
@@ -84,8 +83,8 @@
 				}
 			});
 			
-			var arr = Array.from(e.target.files);
-			arr.forEach((file, index) => {
+			var fileArr = Array.from(e.target.files);
+			fileArr.forEach((file, index) => {
 				var reader = new FileReader();
 				reader.onload = event => {
 					// 선택한 첨부파일을 생성하기 위한 img 태그 추가
@@ -95,20 +94,23 @@
 						img.setAttribute("src", event.target.result);
 						img.setAttribute("width", 100);
 						img.setAttribute("height", 100);
+						img.setAttribute("id", file.name);
 					}
 					// 첨부파일 타입이 이미지 포맷이 아니라면
 					else {
 						img.setAttribute("src", "${source}");
 						img.setAttribute("width", 150);
 						img.setAttribute("height", 100);
+						img.setAttribute("id", file.name);
 					}
 					
-					// 첨부파일을 삭제하기 위한 button 추가
+					// 첨부파일을 삭제하기 위한 'button' 요소 생성
 					var cancel = document.createElement("button");
 					cancel.setAttribute("class", "btn btn-danger btn-circle");
 					cancel.setAttribute("data-name", file.name);
+					cancel.setAttribute("id", file.name);
 					
-					// preview에 첨부파일 및 버튼 추가
+					// preview에 자식 요소로 첨부파일 및 버튼 추가
 					document.getElementById("preview").appendChild(img);
 					document.getElementById("preview").appendChild(cancel);
 				}
@@ -118,19 +120,22 @@
 		
 		// 'X' 버튼을 누르면 원본 파일, 표시 이미지, 버튼 삭제
 		$("#preview").on("click", "button", function(e) {
+			var id = $(this).attr('id');
+			var target = document.getElementById(id);
 			$.ajax({
 				url : 'deleteAttach',
 				data : {
-					fileName : "${path}" + $(this).data("name")
+					fileName : $(this).data("name")
 				},
 				type : 'POST',
 				success:function(result) {
-					if(result==1) console.log("파일 삭제 성공");
+					if(result==1) {
+						console.log("파일 삭제 성공");
+						$(target).siblings().remove()
+						$(target).remove()
+					}
 				}
 			});
-			
-			$(this).siblings().remove()
-			$(this).remove()
 		});
 		
 		// '등록' 버튼을 누르면 데이터가 formData를 통해서 전송
@@ -158,12 +163,9 @@
 		
 		// '취소' 버튼을 누르면 temp에 저장된 데이터 전부 삭제하고 뒤로가기
 		$("#back").on("click", function(e) {
-			var target = $("#preview")
 			$.ajax({
 				url : 'deleteAttachAll',
-				data : {
-
-				}
+				type : 'POST',
 				success:function(result) {
 					if(result==1) {
 						window.location.href="./";
