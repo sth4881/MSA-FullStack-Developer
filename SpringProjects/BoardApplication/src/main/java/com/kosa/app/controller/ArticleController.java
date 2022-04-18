@@ -150,9 +150,8 @@ public class ArticleController {
 				}
 				list.add(attachDTO);
 			}
-			
 			service.insertArticle(articleDTO, list);
-			model.addAttribute("page", page);
+			log.info("글쓰기 성공");
 		} catch (Exception e) {
 			log.info(e.getMessage());
 			return "2";
@@ -160,8 +159,8 @@ public class ArticleController {
 		return "1";
 	}
 	
-	// 게시글 쓰기 페이지에서 파일을 추가할 때마다 업로드
-	@PostMapping("uploadAttach")
+	// 게시글 쓰기 페이지에서 파일을 추가할 때마다 temp 폴더로 업로드
+	@PostMapping("**/uploadAttach")
 	@ResponseBody // 클라이언트의 요청에 JSON 데이터 형식으로 응답하기 위해서 사용
 	public String uploadAttach(MultipartFile[] attach) {
 		try {
@@ -207,7 +206,7 @@ public class ArticleController {
 	}
 	
 	// 게시글 쓰기 페이지에서 '취소' 버튼을 눌러서 첨부파일 전체 삭제
-	@PostMapping("deleteAttachAll")
+	@PostMapping("**/deleteAttachAll")
 	@ResponseBody
 	public String deleteAttachAll() {
 		try {

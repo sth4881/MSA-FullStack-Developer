@@ -12,36 +12,36 @@
 </head>
 <body>
 	<c:set var="articleDTO" value="${articleDTO}" />
-	<form method="post">
+	<form method="post" enctype="multipart/form-data">
 		<table>
 			<tr>
 				<th>글 번호</th>
 				<td>
-					${vno}<input type="hidden" name="ano" required="required" value="${articleDTO.ano}" />
+					${vno}<input type="hidden" id="ano" required="required" value="${articleDTO.ano}" />
 				</td>
 			</tr>
 			<tr>
 				<th>이름</th>
 				<td>
-					${articleDTO.author}<input type="hidden" name="author" value="${articleDTO.author}" required="required" />
+					${articleDTO.author}<input type="hidden" id="author" value="${articleDTO.author}" required="required" />
 				</td>
 			</tr>
 			<tr>
 				<th>제목</th>
 				<td>
-					<input type="text" name="title" value="${articleDTO.title}" autofocus="autofocus" required="required"/>
+					<input type="text" id="title" value="${articleDTO.title}" autofocus="autofocus" required="required"/>
 			    </td>
 			</tr>
 			<tr>
 				<th>비밀번호</th>
 				<td>
-					<input type="password" name="password" required="required" /><br>
+					<input type="password" id="password" required="required" /><br>
 				</td>
 			</tr>
 			<tr>
 				<th>내용</th>
 				<td>
-					<textarea name="content" rows="5" cols="40"required="required">
+					<textarea id="content" rows="5" cols="40"required="required">
 						${articleDTO.content}
 				   	</textarea>
 				</td>
@@ -49,7 +49,7 @@
 		</table>
 		<hr>
 	
-		<div class="attachResult">
+		<div id="attachResult">
 			<c:forEach var="attachDTO" items="${attachList}">
 				<c:choose>
 					<c:when test="${attachDTO.ftype eq 1}">
@@ -58,11 +58,9 @@
 							<img src="<c:url value='update/display?fname=${attachDTO.fpath}/s_${attachDTO.uuid}_${attachDTO.fname}'/>" />
 						</a>
 						-->
-						<div>
-							<input type="hidden" data-uuid="${attachDTO.uuid}" data-fname="${attachDTO.fname}" data-fpath="${attachDTO.fpath}" />
-							<img src="<c:url value='display?fname=${attachDTO.fpath}/s_${attachDTO.uuid}_${attachDTO.fname}'/>" />
-							<button type="button" class="btn btn-danger btn-circle"></button>
-						</div>
+						<img src="<c:url value='display?fname=${attachDTO.fpath}/s_${attachDTO.uuid}_${attachDTO.fname}'/>" id="${attachDTO.fname}"/>
+						<button type="button" class="btn btn-danger btn-circle" data-name="${attachDTO.fname}"></button>
+						<input type="hidden" data-uuid="${attachDTO.uuid}" data-fname="${attachDTO.fname}" data-fpath="${attachDTO.fpath}" data-ftype="${attachDTO.ftype}"/>
 					</c:when>
 					<c:otherwise>
 						<!-- 첨부파일이 이미지가 아닌 경우 attach.png 표시
@@ -70,19 +68,17 @@
 							<img src="${app}/resources/img/attach.png" style="width : 100px" />
 						</a>
 						-->
-						<div>
-							<input type="hidden" data-uuid="${attachDTO.uuid}" data-fname="${attachDTO.fname}" data-fpath="${attachDTO.fpath}" />
-							<img src="${app}/resources/img/attach.png" style="width : 100px" />
-							<button type="button" class="btn btn-danger btn-circle"></button>
-						</div>
+						<img src="${app}/resources/img/attach.png" id="${attachDTO.fname}" style="width : 100px" />
+						<button type="button" class="btn btn-danger btn-circle" data-name="${attachDTO.fname}"></button>
+						<input type="hidden" data-uuid="${attachDTO.uuid}" data-fname="${attachDTO.fname}" data-fpath="${attachDTO.fpath}" data-ftype="${attachDTO.ftype}"/>
 					</c:otherwise>
 				</c:choose>
 			</c:forEach>
 		</div>
 		<hr>
 		<input type="file" id="attach" name="첨부파일" style="" multiple />
-		<input type="submit" value="수정" />
-		<button type="button" onClick="window.location.href='../?vno=${vno}'">취소</button>
+		<button type="button" id="modify">수정</button>
+		<button type="button" id="back" onClick="window.location.href='../?vno=${vno}'">취소</button>
 	</form>
 </body>
 <script type="text/javascript" src="<c:url value='/webjars/jquery/3.6.0/dist/jquery.js' />"></script>
@@ -161,30 +157,24 @@
 		// 'X' 버튼을 누르면 원본 파일, 표시 이미지, 버튼 삭제
 		$("#attachResult").on("click", "button", function(e) {
 			var fileName = $(this).data('name');
-			$.ajax({
-				url : 'deleteAttach',
-				data : {
-					fileName : fileName
-				},
-				type : 'POST',
-				success:function(result) {
-					if(result==1) {
-						$("button[data-name='"+fileName+"']").remove();
-						document.getElementById(fileName).remove();
-						console.log("파일 삭제 성공");
-					}
-				}
-			});
+			$("button[data-name='"+fileName+"']").remove();
+			document.getElementById(fileName).remove();
+			console.log("화면에서 삭제");
 		});
 		
-		// '등록' 버튼을 누르면 데이터가 formData를 통해서 전송
-		$("#register").on("click", function(e) {
+		// '수정' 버튼을 누르면 formData를 통해서 데이터 전송
+		$("#modify").on("click", function(e) {
 			var formData = new FormData();
+			formData.append("ano", $("#ano").val());
 			formData.append("title", $("#title").val());
-			formData.append("author", $("#author").val());
-			formData.append("password", $("#password").val());
 			formData.append("content", $("#content").val());
-	
+			formData.append("password", $("#password").val());
+			
+			var files = $("#attachResult").children('input');
+			for(var i=0; i<files.length; i++) {
+				console.log(files[i]);
+			}
+			
 			$.ajax({
 				url : '',
 				processData : false,
@@ -192,9 +182,11 @@
 				data : formData,
 				type : 'POST',
 				success:function(result) {
-					if(result==1) {
-						alert("게시물 작성 완료");
-						window.location.href = "../1/";
+					if(result == "ERROR") {
+						alert("게시물 수정 오류");
+					} else {
+						alert("게시물 수정 완료");
+						window.location.href = "../?vno="+result;
 					}
 				}
 			});
@@ -207,7 +199,7 @@
 				type : 'POST',
 				success:function(result) {
 					if(result==1) {
-						window.location.href="./";
+						window.location.href="../?vno=${vno}";
 					}
 				}
 			});

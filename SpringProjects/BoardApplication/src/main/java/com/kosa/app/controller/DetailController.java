@@ -1,10 +1,18 @@
 package com.kosa.app.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kosa.app.dto.ArticleDTO;
 import com.kosa.app.dto.AttachDTO;
@@ -32,6 +41,7 @@ import com.kosa.app.service.ArticleService;
 import com.kosa.app.service.ReplyService;
 
 import lombok.extern.log4j.Log4j;
+import net.coobird.thumbnailator.Thumbnailator;
 
 @Log4j
 @Controller
@@ -45,6 +55,24 @@ public class DetailController {
 	
 	@Autowired
 	private ReplyService replyService;
+	
+	// 오늘 날짜의 경로를 문자열로 생성하는 메소드
+	private String getFolderPath() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String str = sdf.format(new Date());
+		return str.replace("-", "/");
+	}
+	
+	// 특정 파일이 이미지 타입인지 검사하는 메소드
+	private boolean checkImageType(File file) {
+		try {
+			String contentType = Files.probeContentType(file.toPath());
+			return contentType.startsWith("image");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 	
 	// 게시글에 포함된 파일들을 모두 삭제하는 메소드
 	public void deleteAttachFiles(List<AttachDTO> list) {
@@ -146,7 +174,7 @@ public class DetailController {
 	
 	// 게시글 수정하기(GET)
 	@RequestMapping(value="/{vno}/update", method=RequestMethod.GET)
-	public String update( @PathVariable long ano, @PathVariable long vno, Model model) {
+	public String update(@PathVariable long ano, @PathVariable long vno, Model model) {
 		try {
 			ArticleDTO articleDTO = articleService.getArticleDetail(ano);
 			List<AttachDTO> attachList = articleService.getAttachList(ano);
@@ -162,19 +190,59 @@ public class DetailController {
 	
 	// 게시글 수정하기(POST)
 	@RequestMapping(value="/{vno}/update", method=RequestMethod.POST)
-	public String update(@ModelAttribute ArticleDTO dto, @PathVariable long vno, Model model) {
+	@ResponseBody
+	public String update(@RequestParam long ano, @RequestParam String title,
+		@RequestParam String content, @RequestParam String password, 
+		@RequestParam String[] data, @PathVariable long vno) {
 		try {
-			articleService.updateArticle(dto);
-			log.info("수정 성공");
+			ArticleDTO articleDTO = new ArticleDTO();
+			articleDTO.setAno(ano); articleDTO.setTitle(title);
+			articleDTO.setContent(content); articleDTO.setPassword(password);
 			
-			model.addAttribute("msg", vno + "번 게시물이 수정되었습니다.");
-			model.addAttribute("url", "../?vno=" + vno);
+			File uploadFolder = new File(uploadPath, getFolderPath());
+			if(uploadFolder.exists()==false) {
+				uploadFolder.mkdirs();
+			}
+			
+			List<AttachDTO> list = new ArrayList<>();
+			Map<String, File> fileMap = new HashMap<>();
+			File tempUploadFolder = new File(uploadPath+"temp");
+			for(File tempFile : tempUploadFolder.listFiles()) { // temp 폴더 내의 파일들에 대해서
+				UUID uuid = UUID.randomUUID();
+				String uploadFileName = tempFile.getName();
+				uploadFileName = uuid.toString() + "_" + uploadFileName;
+				fileMap.put(uploadFileName, tempFile);
+				
+				AttachDTO attachDTO = new AttachDTO();
+				attachDTO.setFname(tempFile.getName());
+				attachDTO.setFpath(getFolderPath());
+				attachDTO.setUuid(uuid.toString());
+				if(checkImageType(tempFile)) {
+					attachDTO.setFtype(1);
+				}
+				list.add(attachDTO);
+			}
+			articleService.updateArticle(articleDTO, list);
+			
+			// 원본 파일을 업로드용 폴더로 이동
+			for(String uploadFileName : fileMap.keySet()) {
+				File tempFile = fileMap.get(uploadFileName);
+				File saveFile = new File(uploadFolder, uploadFileName);
+				if(tempFile.renameTo(saveFile)) {
+					log.info("파일 업로드 성공 : " + uploadFileName);
+				}
+				// 원본 파일이 이미지라면 업로드용 폴더에 썸네일 생성
+				if(checkImageType(saveFile)) {
+					FileOutputStream thumbnail = new FileOutputStream(new File(uploadFolder, "s_" + uploadFileName));
+					Thumbnailator.createThumbnail(new FileInputStream(saveFile), thumbnail, 100, 100);
+					thumbnail.close();
+				}
+			}
+			return Long.toString(vno);
 		} catch (Exception e) {
-			model.addAttribute("msg", e.getMessage());
-			model.addAttribute("url", "javascript:history.back();");
-			log.info("수정 오류");
+			log.info(e.getMessage());
+			return "ERROR";
 		}
-		return "result";
 	}
 	
 	// 게시글 삭제하기(GET)
