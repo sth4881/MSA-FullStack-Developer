@@ -16,7 +16,7 @@ public interface ArticleService {
 	
 	void insertArticle(ArticleDTO dto, List<AttachDTO> list) throws Exception;
 
-	boolean updateArticle(ArticleDTO dto) throws Exception;
+	void updateArticle(ArticleDTO dto) throws Exception;
 
-	boolean deleteArticle(ArticleDTO dto) throws Exception;
+	void deleteArticle(ArticleDTO dto) throws Exception;
 }

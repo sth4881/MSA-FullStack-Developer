@@ -34,7 +34,7 @@ import net.coobird.thumbnailator.Thumbnailator;
 
 @Log4j
 @Controller
-@RequestMapping("board/{page}")
+@RequestMapping("article/{page}")
 public class ArticleController {
 	@Value("${articlePerPage}")
 	private int articlePerPage; // 한 페이지에 보여지는 게시물의 개수
@@ -67,22 +67,6 @@ public class ArticleController {
 			e.printStackTrace();
 		}
 		return false;
-	}
-	
-	// 게시글에 포함된 파일들을 모두 삭제하는 메소드
-	public void deleteAttachFile(List<AttachDTO> list) {
-		if(list == null || list.size() == 0) return;
-		log.info(list);
-		list.forEach(attach -> {
-			try {
-				// 원본 파일 삭제
-				Path source = Paths.get(uploadPath + attach.getFpath()
-				+ "\\" + attach.getUuid() + "_" + attach.getFname());
-				if(Files.deleteIfExists(source)) log.info("원본 삭제 성공");
-			} catch (Exception e) {
-				log.error("File Deletion Error : " + e.getMessage());
-			}
-		});
 	}
 	
 	// 게시글 목록 불러오기

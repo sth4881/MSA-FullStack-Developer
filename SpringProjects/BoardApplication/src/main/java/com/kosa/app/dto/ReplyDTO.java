@@ -6,9 +6,9 @@ import lombok.Data;
 
 @Data
 public class ReplyDTO {
-	private long cno;
+	private long rno;
 	private String reply;
-	private String author;
+	private String replyer;
 	private String password;
 	private Date createdAt;
 	private Date updatedAt;

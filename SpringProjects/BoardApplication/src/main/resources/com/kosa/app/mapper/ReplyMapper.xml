@@ -3,20 +3,26 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.kosa.app.mapper.ReplyMapper">
+	<!-- 댓글 조회 -->
+	<select id="getReplyList" resultType="ReplyDTO" parameterType="long">
+		SELECT reply, replyer, createdat, updatedat FROM t_reply
+		WHERE ano=#{ano} ORDER BY createdAt DESC
+	</select>
+	
+	<!-- 댓글 작성 -->
 	<insert id="insertReply" parameterType="ReplyDTO">
-		INSERT INTO t_reply(rno, content, author, password, ano)
-		VALUES(t_reply_no_seq.nextval, #{content}, #{author}, #{password}, #{ano})
+		INSERT INTO t_reply(rno, reply, replyer, password, ano)
+		VALUES(t_reply_no_seq.nextval, #{reply}, #{replyer}, #{password}, #{ano})
 	</insert>
 	
-	<select id="getReplyList" resultType="ReplyDTO">
-		SELECT content, author, createdAt FROM t_reply WHERE ano=#{ano}
-	</select>
-
+	<!-- 댓글 수정 -->
 	<update id="updateReply" parameterType="ReplyDTO">
-		UPDATE t_reply SET content=#{content}, author=#{author} WHERE ano=#{ano} AND password=#{password}
+		UPDATE t_reply SET reply=#{reply}, updatedat=sysdate
+		WHERE rno=#{rno} AND password=#{password}
 	</update>
-	
+
+	<!-- 댓글 삭제 -->
 	<delete id="deleteReply" parameterType="ReplyDTO">
-		DELETE FROM t_reply WHERE ano=#{ano} AND password=#{password}
+		DELETE FROM t_reply WHERE rno=#{rno} AND password=#{password}
 	</delete>
 </mapper>

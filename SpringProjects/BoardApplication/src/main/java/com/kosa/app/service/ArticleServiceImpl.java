@@ -63,15 +63,17 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public boolean updateArticle(ArticleDTO dto) throws Exception {
-		return articleMapper.updateArticle(dto) > 0;
+	public void updateArticle(ArticleDTO dto) throws Exception {
+		if(articleMapper.updateArticle(dto) != 1) {
+			throw new RuntimeException("게시물이 존재하지 않거나 비밀번호가 틀립니다.");
+		}
 	}
 
 	@Transactional
 	@Override
-	public boolean deleteArticle(ArticleDTO dto) throws Exception {
-		attachMapper.deleteAttachFiles(dto.getAno());
-		return articleMapper.deleteArticle(dto) == 1;
+	public void deleteArticle(ArticleDTO dto) throws Exception {
+		if(articleMapper.deleteArticle(dto) == 1) attachMapper.deleteAttachFiles(dto.getAno());
+		else throw new RuntimeException("게시물이 존재하지 않거나 비밀번호가 틀립니다.");
 	}
 	
 	@Override

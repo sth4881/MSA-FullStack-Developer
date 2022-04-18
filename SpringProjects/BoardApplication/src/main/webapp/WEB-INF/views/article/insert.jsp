@@ -33,12 +33,12 @@
 			</tr>
 			<tr>
 			   	<th>첨부파일</th>
-				<td><input type="file" id="attach" multiple /></td>
+				<td><input type="file" id="attach" style="" multiple /></td>
 			</tr>
 		</table>
 		
-		<div id="preview">
-
+		<div id="attachResult">
+		
 		</div>
 		
 		<button type="button" id="register">등록</button>
@@ -79,7 +79,7 @@
 				data : formData,
 				type : 'POST',
 				success:function(result) {
-					if(result==1) console.log("업로드 성공");
+					if(result==1) console.log("파일 업로드 성공");
 				}
 			});
 			
@@ -105,34 +105,33 @@
 					}
 					
 					// 첨부파일을 삭제하기 위한 'button' 요소 생성
-					var cancel = document.createElement("button");
-					cancel.setAttribute("class", "btn btn-danger btn-circle");
-					cancel.setAttribute("data-name", file.name);
-					cancel.setAttribute("id", file.name);
+					var cancelBtn = document.createElement("button");
+					cancelBtn.setAttribute("type", "button");
+					cancelBtn.setAttribute("class", "btn btn-danger btn-circle");
+					cancelBtn.setAttribute("data-name", file.name);
 					
-					// preview에 자식 요소로 첨부파일 및 버튼 추가
-					document.getElementById("preview").appendChild(img);
-					document.getElementById("preview").appendChild(cancel);
+					// attachResult에 자식 요소로 첨부파일 및 버튼 추가
+					document.getElementById("attachResult").appendChild(img);
+					document.getElementById("attachResult").appendChild(cancelBtn);
 				}
 				reader.readAsDataURL(file);
 			});
 		});
 		
 		// 'X' 버튼을 누르면 원본 파일, 표시 이미지, 버튼 삭제
-		$("#preview").on("click", "button", function(e) {
-			var id = $(this).attr('id');
-			var target = document.getElementById(id);
+		$("#attachResult").on("click", "button", function(e) {
+			var fileName = $(this).data('name');
 			$.ajax({
 				url : 'deleteAttach',
 				data : {
-					fileName : $(this).data("name")
+					fileName : fileName
 				},
 				type : 'POST',
 				success:function(result) {
 					if(result==1) {
+						$("button[data-name='"+fileName+"']").remove();
+						document.getElementById(fileName).remove();
 						console.log("파일 삭제 성공");
-						$(target).siblings().remove()
-						$(target).remove()
 					}
 				}
 			});

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -26,22 +27,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kosa.app.dto.ArticleDTO;
 import com.kosa.app.dto.AttachDTO;
+import com.kosa.app.dto.ReplyDTO;
 import com.kosa.app.service.ArticleService;
+import com.kosa.app.service.ReplyService;
 
 import lombok.extern.log4j.Log4j;
 
 @Log4j
 @Controller
-@RequestMapping("board/{page}/{ano}")
+@RequestMapping("article/{page}/{ano}")
 public class DetailController {
 	@Value("${uploadPath}")
 	private String uploadPath; // 파일 업로드 경로
 	
-	// 생성자 주입
-	private ArticleService service;
-	public DetailController(ArticleService service) {
-		this.service = service;
-	}
+	@Autowired
+	private ArticleService articleService;
+	
+	@Autowired
+	private ReplyService replyService;
 	
 	// 게시글에 포함된 파일들을 모두 삭제하는 메소드
 	public void deleteAttachFiles(List<AttachDTO> list) {
@@ -74,18 +77,23 @@ public class DetailController {
 		@RequestParam long vno, // 가상 번호(list.jsp에서 query-string으로 들어옴)
 		Model model) {
 		try {
-			ArticleDTO dto = service.getArticleDetail(ano);
+			ArticleDTO dto = articleService.getArticleDetail(ano);
 			model.addAttribute("articleDTO", dto);
 			model.addAttribute("page", page);
 			model.addAttribute("vno", vno); // detail.jsp로 값을 보내주기 위해서 사용
 			
-			List<AttachDTO> list = service.getAttachList(ano);
-			for(AttachDTO item : list) {
-//				item.setFpath(encodeURIComponent(item.getFpath()));
-				log.info(item);
-			}
-			model.addAttribute("attachList", list);
+			List<AttachDTO> attachList = articleService.getAttachList(ano);
+//			for(AttachDTO attachDTO : attachList) {
+//				log.info(attachDTO);
+//			}
+//			
+			List<ReplyDTO> replyList = replyService.getReplyList(ano);
+//			for(ReplyDTO replyDTO : replyList) {
+//				log.info(replyDTO);
+//			}
 			
+			model.addAttribute("attachList", attachList);
+			model.addAttribute("replyList", replyList);
 			return "article.detail";
 		} catch (Exception e) {
 			model.addAttribute("msg", e.getMessage());
@@ -95,7 +103,7 @@ public class DetailController {
 	}
 	
 	// 첨부파일 데이터 전송
-	@GetMapping("display")
+	@GetMapping("**/display")
 	@ResponseBody
 	public ResponseEntity<byte[]> getAttachFile(String fname) { // 브라우저에 보내주는 파일 종류에 따라 MIME 타입이 달라진다.
 		// 업로드 파일 경로 + 파일명으로 파일 생성
@@ -137,15 +145,13 @@ public class DetailController {
 	}
 	
 	// 게시글 수정하기(GET)
-	//@GetMapping("update")
 	@RequestMapping(value="/{vno}/update", method=RequestMethod.GET)
-	public String update(
-		@PathVariable long ano, 
-		@PathVariable long vno,
-		Model model) {
+	public String update( @PathVariable long ano, @PathVariable long vno, Model model) {
 		try {
-			ArticleDTO dto = service.getArticleDetail(ano);
-			model.addAttribute("dto", dto);
+			ArticleDTO articleDTO = articleService.getArticleDetail(ano);
+			List<AttachDTO> attachList = articleService.getAttachList(ano);
+			model.addAttribute("articleDTO", articleDTO);
+			model.addAttribute("attachList", attachList);
 			return "article.update";
 		} catch (Exception e) {
 			model.addAttribute("msg", "게시물이 존재하지 않습니다.");
@@ -155,54 +161,45 @@ public class DetailController {
 	}
 	
 	// 게시글 수정하기(POST)
-	//@PostMapping("update")
 	@RequestMapping(value="/{vno}/update", method=RequestMethod.POST)
-	public String update(
-		@ModelAttribute ArticleDTO dto,
-		@PathVariable long vno,
-		Model model) {
-		log.info(dto.toString());
+	public String update(@ModelAttribute ArticleDTO dto, @PathVariable long vno, Model model) {
 		try {
-			if(service.updateArticle(dto)) log.info("수정 성공");
+			articleService.updateArticle(dto);
+			log.info("수정 성공");
+			
 			model.addAttribute("msg", vno + "번 게시물이 수정되었습니다.");
 			model.addAttribute("url", "../?vno=" + vno);
 		} catch (Exception e) {
 			model.addAttribute("msg", e.getMessage());
 			model.addAttribute("url", "javascript:history.back();");
+			log.info("수정 오류");
 		}
 		return "result";
 	}
 	
 	// 게시글 삭제하기(GET)
-	//@GetMapping("delete")
 	@RequestMapping(value="/{vno}/delete", method=RequestMethod.GET)
-	public String delete(
-		@PathVariable long ano,
-		@PathVariable long vno,
-		Model model) {
+	public String delete(@PathVariable long ano, @PathVariable long vno, Model model) {
 		model.addAttribute(vno);
 		return "article.delete";
 	}
 	
 	// 게시글 삭제하기(POST)
-	//@PostMapping("delete")
 	@RequestMapping(value="/{vno}/delete", method=RequestMethod.POST)
-	public String delete(
-		@ModelAttribute ArticleDTO dto,
-		@PathVariable long ano,
-		@PathVariable long vno,
-		Model model) {
+	public String delete(@ModelAttribute ArticleDTO dto,
+		@PathVariable long ano, @PathVariable long vno, Model model) {
 		try {
-			List<AttachDTO> list = service.getAttachList(ano);
-			if(service.deleteArticle(dto)) {
-				deleteAttachFiles(list);
-				log.info("삭제 성공");
-			}
+			List<AttachDTO> list = articleService.getAttachList(ano);
+			articleService.deleteArticle(dto);
+			deleteAttachFiles(list);
+			log.info("삭제 성공");
+			
 			model.addAttribute("msg", vno + "번 게시물이 삭제됐습니다.");
-			model.addAttribute("url", "../../../1/");
+			model.addAttribute("url", "../../../1/");	
 		} catch (Exception e) {
 			model.addAttribute("msg", e.getMessage());
 			model.addAttribute("url", "javascript:history.back();");
+			log.info("삭제 오류");
 		}
 		return "result";
 	}
