@@ -1,5 +1,6 @@
 package com.kosa.app.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,12 +65,12 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Transactional
 	@Override
-	public void updateArticle(ArticleDTO dto, List<AttachDTO> list) throws Exception {
+	public void updateArticle(ArticleDTO dto) throws Exception {
 		if(articleMapper.updateArticle(dto) != 1)
 			throw new RuntimeException("게시물이 존재하지 않거나 비밀번호가 틀립니다.");
 		else {
-			if(list == null || list.size() <= 0) return;
-			list.forEach(attach -> {
+			attachMapper.deleteAttachFiles(dto.getAno()); // 기존 게시물 전체 삭제
+			dto.getList().forEach(attach -> {
 				attach.setAno(dto.getAno());
 				try {
 					attachMapper.insertAttachFile(attach);

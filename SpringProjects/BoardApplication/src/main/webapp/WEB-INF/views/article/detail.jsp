@@ -11,7 +11,9 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>${articleDTO.title} :: 게시물 상세보기</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>${articleDTO.title} :: Spring Board Project</title>
+	<link rel="stylesheet" href="<c:url value="/webjars/bootstrap/4.6.1/css/bootstrap.min.css"/>">
 	<style>
 		.attachResult {
 			width : 100%;
@@ -31,26 +33,24 @@
 	</style>
 </head>
 <body>
-	<table border="1">
-		<tr>
-			<th>글번호</th>
-			<td>${vno}</td>
-		</tr>
-		<tr>
-			<th>작성자</th>
-			<td>${articleDTO.author}</td>
-		</tr>
-		<tr>
-			<th>제목</th>
-			<td>${articleDTO.title}</td>
-		</tr>
-		<tr>
-			<th>내용</th>
-			<td>${articleDTO.content}</td>
-		</tr>
-		<tr>
-			<th>작성일자</th>
-			<td>
+	<div class="form-group">
+		<div class="form-row">
+			<div class="col">
+				<label>번호</label>
+				${vno}
+			</div>
+			<div class="col">
+				<label>조회수</label>
+				${articleDTO.viewCount}
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="col">
+				<label>작성자</label>
+				${articleDTO.author}
+			</div>
+			<div class="col">
+				<label>작성일자</label>
 				<c:choose>
 					<c:when test="${today eq articleCreated}">
 						<fmt:formatDate value="${articleDTO.createdAt}" type="time" />
@@ -59,39 +59,88 @@
 						<fmt:formatDate value="${articleDTO.createdAt}" type="date" pattern="YYYY-MM-dd" />
 					</c:otherwise>
 				</c:choose>
-			</td>
-		</tr>
-		<tr>
-			<th>조회수</th>
-			<td>${articleDTO.viewCount}</td>
-		</tr>
-	</table>
-	<hr>
-	
-	<div class="attachResult">
-		<c:choose>
-			<c:when test="${empty attachList}">
-				등록된 첨부파일이 없습니다.
-			</c:when>
-			<c:otherwise>
-				<c:forEach var="attachDTO" items="${attachList}">
+			</div>
+		</div>
+		<div class="form-group">
+			<label>제목</label>
+			${articleDTO.title}
+		</div>
+		<div class="form-group">
+			<label>내용</label>
+			${articleDTO.content}
+		</div>
+	</div>
+	<!-- 
+	<table class="table">
+		<tbody align="center">
+			<tr>
+				<th class="thead-dark">번호</th>
+				<td>${vno}</td>
+			</tr>
+			<tr>
+				<th class="thead-dark">작성자</th>
+				<td>${articleDTO.author}</td>
+			</tr>
+			<tr>
+				<th class="thead-dark">제목</th>
+				<td>${articleDTO.title}</td>
+			</tr>
+			<tr>
+				<th class="thead-dark">내용</th>
+				<td>${articleDTO.content}</td>
+			</tr>
+			<tr>
+				<th class="thead-dark">작성일자</th>
+				<td>
 					<c:choose>
-						<c:when test="${attachDTO.ftype eq 1}">
-							<!-- 첨부파일이 이미지인 경우 썸네일 표시 -->
-							<a href="javascript:;" data-fpath="${attachDTO.fpath}" data-uuid="${attachDTO.uuid}" data-fname="${attachDTO.fname}" data-ftype="${attachDTO.ftype}">
-								<img src="<c:url value='display?fname=${attachDTO.fpath}/s_${attachDTO.uuid}_${attachDTO.fname}'/>" />
-							</a>
+						<c:when test="${today eq articleCreated}">
+							<fmt:formatDate value="${articleDTO.createdAt}" type="time" />
 						</c:when>
 						<c:otherwise>
-							<a href="<c:url value='download?fname=${attachDTO.fpath}/${attachDTO.uuid}_${attachDTO.fname}'/>">
-								<!-- 첨부파일이 이미지가 아닌 경우 attach.png 표시 -->
-								<img src="${app}/resources/img/attach.png" style="width : 100px" />
-							</a>
+							<fmt:formatDate value="${articleDTO.createdAt}" type="date" pattern="YYYY-MM-dd" />
 						</c:otherwise>
 					</c:choose>
-				</c:forEach>
-			</c:otherwise>
-		</c:choose>
+				</td>
+			</tr>
+			<tr>
+				<th class="thead-dark">조회수</th>
+				<td>${articleDTO.viewCount}</td>
+			</tr>
+		</tbody>
+	</table>
+	 -->
+	<hr>
+	
+	<div class="attachResult" align="center">
+		<ul class="list-inline">
+			<c:choose>
+				<c:when test="${empty attachList}">
+					등록된 첨부파일이 없습니다.
+				</c:when>
+				<c:otherwise>
+					<c:forEach var="attachDTO" items="${attachList}">
+						<c:choose>
+							<c:when test="${attachDTO.ftype eq 1}">
+								<li class="list-inline-item">
+									<!-- 첨부파일이 이미지인 경우 썸네일 표시 -->
+									<a href="javascript:;" data-fpath="${attachDTO.fpath}" data-uuid="${attachDTO.uuid}" data-fname="${attachDTO.fname}" data-ftype="${attachDTO.ftype}">
+										<img src="<c:url value='display?fname=${attachDTO.fpath}/s_${attachDTO.uuid}_${attachDTO.fname}'/>" />
+									</a>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li class="list-inline-item">
+									<a href="<c:url value='download?fname=${attachDTO.fpath}/${attachDTO.uuid}_${attachDTO.fname}'/>">
+										<!-- 첨부파일이 이미지가 아닌 경우 attach.png 표시 -->
+										<img src="${app}/resources/img/attach.png" style="width : 100px" />
+									</a>
+								</li>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+				</c:otherwise>
+			</c:choose>
+		</ul>
 	</div>
 	
 	<div class="bigPictureWrapper">
@@ -102,29 +151,53 @@
 	<hr>
 	
 	<!-- 댓글 시작 -->
-	<h3>댓글</h3>
-	<div>
+	<h4>댓글</h4>
 		<form id="replyForm" method="POST">
-			<label>이름</label><input type="text" id="replyer"><br>
-			<label>비밀번호</label><input type="password" id="password"><br>
-			<textarea rows="5" cols="50" id="reply"></textarea><br>
-			<button type="button" id="reply-btn">등록</button>
+			<div class="form-group">
+				<div class="form-row">
+					<div class="col">
+						<label>이름</label>
+						<input type="text" id="replyer" class="form-control" required />
+					</div>
+					<div class="col">
+						<label>비밀번호</label>
+						<input type="password" id="password" class="form-control" required />
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>내용</label>
+				<textarea id="reply" class="form-control" rows="5" cols="50" style="resize:none;" required></textarea>
+			</div>	
 		</form>
-	</div>
+		<div align="right">
+			<button type="button" class="btn btn-primary btn-sm" id="reply-btn">댓글 쓰기</button>
+		</div>
 	<hr>
 	
 	<div id="replyResult">
-		<ul>
-
+		<ul class="list-unstyled">
+			
 		</ul>
 	</div>
 	<!-- 댓글 끝 -->
 	
-	<a href="${vno}/update">게시글 수정</a> |
-	<a href="${vno}/delete">게시글 삭제</a> |
-	<a href="../">목록</a>
+	<div align="center">
+		<ul class="list-inline">
+			<li class="list-inline-item">
+				<a href="${vno}/update">게시글 수정</a>
+			</li>
+			<li class="list-inline-item">
+				<a href="${vno}/delete">게시글 삭제</a>
+			</li>
+			<li class="list-inline-item">
+				<a href="../">목록으로</a>
+			</li>
+		</ul>
+	</div>
 </body>
-<script type="text/javascript" src="<c:url value="/webjars/jquery/3.6.0/dist/jquery.js" />"></script>
+<script type="text/javascript" src="<c:url value="/webjars/jquery/3.6.0/dist/jquery.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/webjars/bootstrap/4.6.1/js/bootstrap.min.js"/>"></script>
 <script type="text/javascript">
 	// 썸네일을 클릭하면 원본 이미지를 보여주는 메소드
 	function showBigImage(fileCallPath) {
@@ -144,9 +217,9 @@
 			},
 			success:function(result) {
 				var html = "";
-				if(result.length < 1) html = "등록된 댓글이 없습니다.<hr>";
+				if(result.length < 1) html = '<p align="center">등록된 댓글이 없습니다.</p><hr>';
 				else {
-					html += ""
+					html += "";
 					$(result).each(function() {
 						var createDate = new Date(this.createdAt);
 						var createTime = getFormatTime(createDate);
@@ -160,16 +233,16 @@
 							createDate += createTime;
 						}
 						html += "<li>";
-						html += "	<strong>작성자 : "+this.replyer+"</strong>&nbsp;&nbsp;&nbsp;&nbsp;";
-						html += "	작성일자 : "+createDate+"<br>";
+						html += "	<strong>"+this.replyer+"</strong>&nbsp;&nbsp;&nbsp;&nbsp;";
+						html += "	"+createDate+"<br>";
 						html += "	<p>"+this.reply+"</p>";
-						html += '	<button type="button" id="update-btn" data-rno='+this.rno+'>수정</button>';
-						html += '	<button type="button" id="delete-btn" data-rno='+this.rno+'>삭제</button>';
+						//html += '	<button type="button" id="update-btn" data-rno='+this.rno+'>수정</button>';
+						//html += '	<button type="button" id="delete-btn" data-rno='+this.rno+'>삭제</button>';
 						html += "</li>";
 						html += "<hr>";
 					});
 				}
-				$("#replyResult").html(html);
+				$(".list-unstyled").html(html);
 			}
 		});
 	}
@@ -185,7 +258,19 @@
 	}
 	
 	function getFormatTime(date) {
-		return date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+		var hour = date.getHours();
+		if(hour < 10) {
+			hour = '0'+hour;
+		}
+		var min = date.getMinutes();
+		if(min < 10) {
+			min = '0'+min;
+		}
+		var sec = date.getSeconds();
+		if(sec < 10) {
+			sec = '0'+sec;
+		}
+		return hour+":"+min+":"+sec;
 	}
 	
 	$(document).ready(function() {
@@ -206,20 +291,20 @@
 		
 		// '등록' 버튼을 누르면 댓글 추가
 		$("#reply-btn").on("click", function(e) {
-			var reply = $("#reply").val();
-			var replyer = $("#replyer").val();
-			var password = $("#password").val();
 			$.ajax({
 				url : '${app}/reply/insert',
 				type : 'POST',
 				headers : { "Content-Type" : "application/json" },
 				data : JSON.stringify({
-					reply : reply,
-					replyer : replyer,
-					password : password,
+					reply : $("#reply").val(),
+					replyer : $("#replyer").val(),
+					password : $("#password").val(),
 					ano : ${articleDTO.ano}
 				}),
 				success:function(result) {
+					$("#reply").val("");
+					$("#replyer").val("");
+					$("#password").val("");
 					console.log(result);
 					showReplyList();
 				}

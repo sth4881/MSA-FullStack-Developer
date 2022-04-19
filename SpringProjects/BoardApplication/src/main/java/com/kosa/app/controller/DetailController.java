@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.kosa.app.dto.ArticleDTO;
 import com.kosa.app.dto.AttachDTO;
@@ -190,21 +189,13 @@ public class DetailController {
 	
 	// 게시글 수정하기(POST)
 	@RequestMapping(value="/{vno}/update", method=RequestMethod.POST)
-	@ResponseBody
-	public String update(@RequestParam long ano, @RequestParam String title,
-		@RequestParam String content, @RequestParam String password, 
-		@RequestParam String[] data, @PathVariable long vno) {
+	public String update(@ModelAttribute ArticleDTO articleDTO, @PathVariable long vno, Model model) {
+		log.info(articleDTO);
 		try {
-			ArticleDTO articleDTO = new ArticleDTO();
-			articleDTO.setAno(ano); articleDTO.setTitle(title);
-			articleDTO.setContent(content); articleDTO.setPassword(password);
+			// articleDTO.getList()가 null로 인한 오류 방지
+			if(articleDTO.getList() == null) articleDTO.setList(new ArrayList<>()); 
 			
-			File uploadFolder = new File(uploadPath, getFolderPath());
-			if(uploadFolder.exists()==false) {
-				uploadFolder.mkdirs();
-			}
-			
-			List<AttachDTO> list = new ArrayList<>();
+			// 기존 파일 정보만 존재하는 articleDTO.getList()에 새로 업로드된 파일 정보를 추가
 			Map<String, File> fileMap = new HashMap<>();
 			File tempUploadFolder = new File(uploadPath+"temp");
 			for(File tempFile : tempUploadFolder.listFiles()) { // temp 폴더 내의 파일들에 대해서
@@ -220,11 +211,20 @@ public class DetailController {
 				if(checkImageType(tempFile)) {
 					attachDTO.setFtype(1);
 				}
-				list.add(attachDTO);
+				
+				// 위에서 생성한 attachDTO를 articleDTO의 AttachList에 추가
+				articleDTO.getList().add(attachDTO);
 			}
-			articleService.updateArticle(articleDTO, list);
 			
-			// 원본 파일을 업로드용 폴더로 이동
+			// 기존 파일 및 새로 업로드된 파일 정보를 DB에 저장
+			articleService.updateArticle(articleDTO);
+			
+			// 업로드용 폴더 정의 및 생성
+			File uploadFolder = new File(uploadPath, getFolderPath());
+			if(uploadFolder.exists()==false) {
+				uploadFolder.mkdirs();
+			}
+			// 원본 파일을 임시 폴더에서 업로드용 폴더로 이동
 			for(String uploadFileName : fileMap.keySet()) {
 				File tempFile = fileMap.get(uploadFileName);
 				File saveFile = new File(uploadFolder, uploadFileName);
@@ -238,11 +238,14 @@ public class DetailController {
 					thumbnail.close();
 				}
 			}
-			return Long.toString(vno);
+			model.addAttribute("msg", vno + "번 게시물이 수정됐습니다.");
+			model.addAttribute("url", "../?vno="+vno);
 		} catch (Exception e) {
+			model.addAttribute("msg", e.getMessage());
+			model.addAttribute("url", "javascript:history.back();");
 			log.info(e.getMessage());
-			return "ERROR";
 		}
+		return "result";
 	}
 	
 	// 게시글 삭제하기(GET)
@@ -257,17 +260,15 @@ public class DetailController {
 	public String delete(@ModelAttribute ArticleDTO dto,
 		@PathVariable long ano, @PathVariable long vno, Model model) {
 		try {
+			log.info(dto);
 			List<AttachDTO> list = articleService.getAttachList(ano);
-			articleService.deleteArticle(dto);
-			deleteAttachFiles(list);
-			log.info("삭제 성공");
-			
+			articleService.deleteArticle(dto); deleteAttachFiles(list);
 			model.addAttribute("msg", vno + "번 게시물이 삭제됐습니다.");
-			model.addAttribute("url", "../../../1/");	
+			model.addAttribute("url", "../../../1/");
 		} catch (Exception e) {
 			model.addAttribute("msg", e.getMessage());
 			model.addAttribute("url", "javascript:history.back();");
-			log.info("삭제 오류");
+			log.info(e.getMessage());
 		}
 		return "result";
 	}

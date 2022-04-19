@@ -186,7 +186,7 @@ public class ArticleController {
 	}
 	
 	// 게시글 쓰기 페이지에서 'X' 버튼을 눌러서 첨부파일을 삭제
-	@PostMapping("deleteAttach")
+	@PostMapping("**/deleteAttach")
 	@ResponseBody
 	public String deleteAttach(String fileName) {
 		log.info(fileName);

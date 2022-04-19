@@ -1,6 +1,7 @@
 package com.kosa.app.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -14,4 +15,5 @@ public class ArticleDTO {
 	private Date createdAt;
 	private Date updatedAt;
 	private int viewCount;
+	private List<AttachDTO> list;
 }

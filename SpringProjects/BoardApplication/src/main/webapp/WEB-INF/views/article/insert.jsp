@@ -7,45 +7,53 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>새 게시물 쓰기</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>글쓰기 :: Spring Board Project</title>
+	<link rel="stylesheet" href="<c:url value="/webjars/bootstrap/4.6.1/css/bootstrap.min.css"/>">
 </head>
 <body>
 	<form method='POST' enctype="multipart/form-data">
-		<table>
-			<tr>
-				<th>제목</th>
-				<td><input type="text" id="title" autofocus="autofocus" required="required" /></td>
-			</tr>
-			<tr>
-				<th>작성자</th>
-				<td><input type="text" id="author" required="required" /></td>
-			</tr>
-			<tr>
-				<th>비밀번호</th>
-				<td><input type="password" id="password" required="required" /></td>
-			</tr>
-			<tr>
-				<th>내용</th>
-				<td>
-			   		<textarea id="content" rows="5" cols="40" required="required"></textarea>
-			   	</td>
-			</tr>
-			<tr>
-			   	<th>첨부파일</th>
-				<td><input type="file" id="attach" style="" multiple /></td>
-			</tr>
-		</table>
+		<div class="form-group">
+			<div class="form-row">
+				<div class="col">
+					<label>작성자</label>
+					<input type="text" id="author" class="form-control" autofocus="autofocus" required="required" />
+				</div>
+				<div class="col">
+					<label>비밀번호</label>
+					<input type="password" id="password" class="form-control" required />
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label>제목</label>
+			<input type="text" id="title" class="form-control" placeholder="제목을 입력해주세요 :)" required="required" />
+		</div>
+		<div class="form-group">
+			<label>내용</label>
+			<textarea id="content" class="form-control" placeholder="내용을 입력해주세요 :)" rows="5" cols="50" style="resize:none;" required></textarea>
+		</div>
+		<hr>
 		
 		<div id="attachResult">
 		
 		</div>
+		<hr>
 		
-		<button type="button" id="register">등록</button>
-		<button type="button" id="back">취소</button>
+		<div class="input mb-3">
+			<div class="custom-file">
+				<input type="file" class="custom-file-input" id="attach" aria-describedby="inputGroupFileAddon01" multiple />
+			    <label class="custom-file-label">Choose file</label>
+			</div>
+		</div>
+		<div align="right">
+			<button type="button" id="register" class="btn btn-primary btn-sm">글쓰기</button>
+			<button type="button" id="back" class="btn btn-danger btn-sm">취소</button>
+		</div>
 	</form>
 </body>
 <script type="text/javascript" src="<c:url value='/webjars/jquery/3.6.0/dist/jquery.js' />"></script>
+<script type="text/javascript" src="<c:url value="/webjars/bootstrap/4.6.1/js/bootstrap.min.js"/>"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		// 파일 종류 및 크기 제한
@@ -94,21 +102,22 @@
 						img.setAttribute("src", event.target.result);
 						img.setAttribute("width", 100);
 						img.setAttribute("height", 100);
-						img.setAttribute("id", file.name);
+						img.setAttribute("data-filename", file.name);
 					}
 					// 첨부파일 타입이 이미지 포맷이 아니라면
 					else {
 						img.setAttribute("src", "${source}");
 						img.setAttribute("width", 150);
 						img.setAttribute("height", 100);
-						img.setAttribute("id", file.name);
+						img.setAttribute("data-filename", file.name);
 					}
 					
 					// 첨부파일을 삭제하기 위한 'button' 요소 생성
-					var cancelBtn = document.createElement("button");
+					var cancelBtn = document.createElement("input");
 					cancelBtn.setAttribute("type", "button");
-					cancelBtn.setAttribute("class", "btn btn-danger btn-circle");
-					cancelBtn.setAttribute("data-name", file.name);
+					cancelBtn.setAttribute("value", "삭제");
+					cancelBtn.setAttribute("id", file.name);
+					cancelBtn.setAttribute("class", "btn btn-danger btn-sm");
 					
 					// attachResult에 자식 요소로 첨부파일 및 버튼 추가
 					document.getElementById("attachResult").appendChild(img);
@@ -119,8 +128,9 @@
 		});
 		
 		// 'X' 버튼을 누르면 원본 파일, 표시 이미지, 버튼 삭제
-		$("#attachResult").on("click", "button", function(e) {
-			var fileName = $(this).data('name');
+		$("#attachResult").on("click", "input", function(e) {
+			//var fileName = $(this).data('name');
+			var fileName = $(this).attr("id");
 			$.ajax({
 				url : 'deleteAttach',
 				data : {
@@ -129,7 +139,7 @@
 				type : 'POST',
 				success:function(result) {
 					if(result==1) {
-						$("button[data-name='"+fileName+"']").remove();
+						$("img[data-filename='"+fileName+"']").remove();
 						document.getElementById(fileName).remove();
 						console.log("파일 삭제 성공");
 					}
