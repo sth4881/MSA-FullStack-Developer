@@ -8,10 +8,10 @@
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 
 ## 👨‍💻 Project
-### 1차 프로젝트 : [Make My Recipe](https://github.com/Hyundai-SW-Developer-3rd/Make-My-Recipe)
+### 1차 프로젝트 : [Make My Recipe](https://github.com/MSA-FullStack-Developer/Make-My-Recipe)
 - 준비중...
 
-### Assignment : [Spring Board Project](https://github.com/sth4881/Hyundai-SW-Developer-3rd/tree/main/SpringProjects/BoardApplication)
+### Assignment : [Spring Board Project](https://github.com/sth4881/MSA-FullStack-Developer/tree/main/SpringProjects/BoardApplication)
 ```
 BoardApplication
 ├─ src
@@ -66,7 +66,7 @@ BoardApplication
 └─ pom.xml
 ```
 
-### 최종 프로젝트 : [GOGUMA - 고객이 구성하는 마켓](https://github.com/Hyundai-SW-Developer-3rd/GoGuMa)
+### 최종 프로젝트 : [GOGUMA - 고객이 구성하는 마켓](https://github.com/MSA-FullStack-Developer/GoGuMa)
 - 준비중...
 
 ## ✅ Commit Message
