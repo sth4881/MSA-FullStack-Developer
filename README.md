@@ -1,27 +1,17 @@
-# 현대IT&E 채용확정형 SW개발자 양성과정 3기
+# MSA 기반 Full-Stack 개발자 양성과정
 
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)
-![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 
-## 📖 Curriculum
-- Java 객체지향 프로그래밍
-- 데이터 모델링 및 Oracle DB 프로그래밍
-- 반응형 웹을 위한 Front-End 프로그래밍
-- 클라우드 기반 WAS 서버 프로그래밍
-- 전자정부 프레임워크를 이용한 MVC 프로그래밍
-- 소프트웨어 개발 방법론과 CASE 도구 / Git 활용
-- 클라우드 기반 하이브리드 / 반응형 웹 앱 프로젝트
-- 신입사원으로서 갖춰야 할 직장기본소양
-
 ## 👨‍💻 Project
-### 1차 프로젝트 : Recipe Application
-- 준비중 . . .
+### 1차 프로젝트 : [Make My Recipe](https://github.com/Hyundai-SW-Developer-3rd/Make-My-Recipe)
+- 준비중...
 
-### Assignment : Spring Board Project
+### Assignment : [Spring Board Project](https://github.com/sth4881/Hyundai-SW-Developer-3rd/tree/main/SpringProjects/BoardApplication)
 ```
 BoardApplication
 ├─ src
@@ -38,6 +28,7 @@ BoardApplication
 |  │  │     │  └─ ReplyDTO.java
 │  │  │     ├─ mapper
 |  │  │     │  ├─ ArticleMapper.java
+│  │  │     │  ├─ AttachMapper.java
 |  │  │     │  └─ ReplyMapper.java
 │  │  │     └─ service
 |  │  │        ├─ ArticleService.java
@@ -47,6 +38,7 @@ BoardApplication
 │  │  ├─ resources
 |  │  │  └─ com.kosa.app.mapper
 |  |  │     ├─ ArticleMapper.xml
+|  |  |     ├─ AttachMapper.xml
 |  |  │     └─ ReplyMapper.xml
 |  |  └─ webapp
 |  |     └─ WEB-INF
@@ -74,8 +66,11 @@ BoardApplication
 └─ pom.xml
 ```
 
+### 최종 프로젝트 : [GOGUMA - 고객이 구성하는 마켓](https://github.com/Hyundai-SW-Developer-3rd/GoGuMa)
+- 준비중...
+
 ## ✅ Commit Message
 - `[Add] 🌟 ADD_FILE_OR_DIRECTORY`
-- `[Update] ✨ UPDATE_ALMIND_OR_README_OR`
+- `[Update] ✨ UPDATE_README_ONLY`
 - `[Update] 🔥 UPDATE_FILE_OR_DIRECTORY`
 - `[Delete] 💥 DELETE_FILE_OR_DIRECTORY`
