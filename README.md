@@ -11,7 +11,7 @@
 ### 1차 프로젝트 : [Make My Recipe](https://github.com/MSA-FullStack-Developer/Make-My-Recipe)
 - 준비중...
 
-### Assignment : [Spring Board Project](https://github.com/sth4881/MSA-FullStack-Developer/tree/main/SpringProjects/BoardApplication)
+### Assignment : [Spring Board Project](https://github.com/sth4881/Spring-Board-Project)
 ```
 BoardApplication
 ├─ src
